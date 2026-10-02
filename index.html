@@ -40,12 +40,12 @@ button{cursor:pointer}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
 .toggles{display:flex;gap:4px}
-.tg{display:inline-flex;align-items:center;gap:3px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:0 5px;font-size:.6rem;line-height:1.3;color:var(--muted)}
+.tg{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:1px 8px;font-size:.72rem;line-height:1.4;color:var(--muted)}
 .tg[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
-.tg .dot{width:5px;height:5px;border-radius:50%;background:var(--line)}
+.tg .dot{width:6px;height:6px;border-radius:50%;background:var(--line)}
 .tg[aria-pressed="true"] .dot{background:var(--ok)}
-.tg.en[aria-pressed="true"] .dot{background:var(--en)}
-.tg.auto[aria-pressed="true"] .dot{background:var(--again)}
+.tg.tg-en[aria-pressed="true"] .dot{background:var(--en)}
+.tg.tg-auto[aria-pressed="true"] .dot{background:var(--again)}
 .toggles{flex-wrap:wrap}
 .en{position:relative}
 .cd{position:absolute;left:0;right:0;top:-1px;height:3px;display:none}
@@ -140,8 +140,8 @@ details.settings summary{cursor:pointer;color:var(--muted)}
     <h1>瞬間英作文</h1>
     <div class="toggles" role="group" aria-label="音声">
       <button class="tg" id="tgJa" aria-pressed="true"><span class="dot"></span>日本語の音声</button>
-      <button class="tg en" id="tgEn" aria-pressed="true"><span class="dot"></span>英語の音声</button>
-      <button class="tg auto" id="tgAuto" aria-pressed="false"><span class="dot"></span>自動で進む</button>
+      <button class="tg tg-en" id="tgEn" aria-pressed="true"><span class="dot"></span>英語の音声</button>
+      <button class="tg tg-auto" id="tgAuto" aria-pressed="false"><span class="dot"></span>自動で進む</button>
     </div>
   </header>
 
