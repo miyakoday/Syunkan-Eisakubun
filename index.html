@@ -35,7 +35,7 @@ button,select{font:inherit;color:inherit}
 button{cursor:pointer}
 :focus-visible{outline:2px solid var(--en);outline-offset:2px}
 
-.wrap{max-width:720px;margin:0 auto;padding:20px 18px 28px;display:flex;flex-direction:column;gap:16px;min-height:100%}
+.wrap{max-width:720px;margin:0 auto;padding:12px 18px 16px;display:flex;flex-direction:column;gap:10px;min-height:100%}
 
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
 h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
@@ -69,11 +69,11 @@ h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
 .count{font-variant-numeric:tabular-nums;font-family:var(--en-font)}
 
 /* The card: styled like a monitor with a subtitle strip */
-.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;min-height:340px}
-.ja{flex:1;display:flex;flex-direction:column;justify-content:center;padding:34px 28px 26px;gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.ja{flex:1;display:flex;flex-direction:column;justify-content:center;padding:18px 28px 16px;gap:8px}
 .cat{font-size:.78rem;color:var(--muted)}
-.ja-text{margin:0;font-size:clamp(1.55rem,5.2vw,2.25rem);font-weight:700;line-height:1.45;letter-spacing:.01em}
-.en{border-top:1px solid var(--line);background:var(--en-soft);padding:22px 28px 24px;min-height:118px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px}
+.ja-text{margin:0;font-size:clamp(1.25rem,min(5.2vw,3.3vh),2rem);font-weight:700;line-height:1.45;letter-spacing:.01em}
+.en{border-top:1px solid var(--line);background:var(--en-soft);padding:14px 28px 14px;min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:10px}
 .reply{border-left:2px solid var(--en);padding-left:12px;display:flex;flex-direction:column;gap:2px;width:100%}
 .reply-head{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted)}
 .reply-en{margin:0;font-family:var(--en-font);font-size:clamp(1.02rem,3.4vw,1.2rem);font-weight:500;line-height:1.4;color:var(--ink)}
@@ -104,9 +104,9 @@ h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
 .rp:disabled{opacity:.4;cursor:default}
 
 .actions{display:grid;grid-template-columns:auto 1fr auto;gap:10px}
-.btn{border-radius:12px;padding:14px 18px;font-weight:700;font-size:1rem;border:1px solid var(--line);background:var(--surface)}
+.btn{border-radius:12px;padding:10px 18px;font-weight:700;font-size:1rem;border:1px solid var(--line);background:var(--surface)}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.btn.nav{padding:14px 16px;font-weight:500}
+.btn.nav{padding:10px 16px;font-weight:500}
 .grade{display:none;grid-template-columns:1fr 1fr;gap:10px}
 .grade.on{display:grid}
 .btn.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
@@ -127,9 +127,9 @@ details.settings summary{cursor:pointer;color:var(--muted)}
 
 .empty{padding:40px 28px;text-align:center;color:var(--muted)}
 @media (max-width:480px){
-  .ja{padding:26px 20px 20px}.en{padding:18px 20px 20px}
+  .ja{padding:16px 20px 14px}.en{padding:12px 20px 14px}
   .actions{grid-template-columns:auto 1fr auto;gap:8px}
-  .btn.nav{padding:14px 12px}
+  .btn.nav{padding:10px 12px}
 }
 @media (prefers-reduced-motion:reduce){.en.reveal .en-text{animation:none}.track i{transition:none}}
 </style>
