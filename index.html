@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>瞬間英作文</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#E9EDF1; --surface:#FFFFFF; --ink:#18202B; --muted:#5F6B7A; --line:#CCD4DD;
+  --en:#1F4FD8; --en-soft:#E3EAFB; --ok:#1E7A52; --ok-soft:#DDF0E6; --again:#A2461F; --again-soft:#F6E4DA;
+  --ja-font:"Zen Kaku Gothic New","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+  --en-font:"Figtree","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#131922; --surface:#1C2430; --ink:#E7ECF2; --muted:#98A4B3; --line:#2E3947;
+    --en:#8CA9FF; --en-soft:#1F2B47; --ok:#6FCF9E; --ok-soft:#183328; --again:#F09A73; --again-soft:#3A2419;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#131922; --surface:#1C2430; --ink:#E7ECF2; --muted:#98A4B3; --line:#2E3947;
+  --en:#8CA9FF; --en-soft:#1F2B47; --ok:#6FCF9E; --ok-soft:#183328; --again:#F09A73; --again-soft:#3A2419;
+}
+*,*::before,*::after{box-sizing:inherit}
+[hidden]{display:none !important}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--ja-font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+button,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--en);outline-offset:2px}
+
+.wrap{max-width:720px;margin:0 auto;padding:20px 18px 28px;display:flex;flex-direction:column;gap:16px;min-height:100%}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
+.toggles{display:flex;gap:6px}
+.tg{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:.85rem;color:var(--muted)}
+.tg[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
+.tg .dot{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.tg[aria-pressed="true"] .dot{background:var(--ok)}
+.tg.en[aria-pressed="true"] .dot{background:var(--en)}
+.tg.auto[aria-pressed="true"] .dot{background:var(--again)}
+.toggles{flex-wrap:wrap}
+.en{position:relative}
+.cd{position:absolute;left:0;right:0;top:-1px;height:3px;display:none}
+.cd i{display:block;height:100%;width:0;background:var(--en)}
+.cd.run{display:block}
+.cd.run i{animation:cd 5s linear forwards}
+@keyframes cd{from{width:0}to{width:100%}}
+
+.sets{display:flex;gap:18px;border-bottom:1px solid var(--line)}
+.set{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-1px;padding:6px 0 8px;font-size:.92rem;color:var(--muted)}
+.set[aria-pressed="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:700}
+.set small{font-family:var(--en-font);font-size:.78rem;margin-left:4px;color:var(--muted);font-weight:400}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:transparent;border-radius:8px;padding:5px 11px;font-size:.84rem;color:var(--muted);white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+.bar{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--muted)}
+.track{flex:1;height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--ink);width:0;transition:width .25s}
+.count{font-variant-numeric:tabular-nums;font-family:var(--en-font)}
+
+/* The card: styled like a monitor with a subtitle strip */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;display:flex;flex-direction:column;overflow:hidden;min-height:340px}
+.ja{flex:1;display:flex;flex-direction:column;justify-content:center;padding:34px 28px 26px;gap:14px}
+.cat{font-size:.78rem;color:var(--muted)}
+.ja-text{margin:0;font-size:clamp(1.55rem,5.2vw,2.25rem);font-weight:700;line-height:1.45;letter-spacing:.01em}
+.en{border-top:1px solid var(--line);background:var(--en-soft);padding:22px 28px 24px;min-height:118px;display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:16px}
+.reply{border-left:2px solid var(--en);padding-left:12px;display:flex;flex-direction:column;gap:2px;width:100%}
+.reply-head{display:flex;align-items:center;gap:8px;font-size:.75rem;color:var(--muted)}
+.reply-en{margin:0;font-family:var(--en-font);font-size:clamp(1.02rem,3.4vw,1.2rem);font-weight:500;line-height:1.4;color:var(--ink)}
+.reply-ja{margin:0;font-size:.85rem;color:var(--muted)}
+.reply .rp{padding:2px 8px;font-size:.72rem}
+.en.reveal .reply{animation:rise .22s ease-out .15s both}
+.gram{width:100%;display:flex;flex-direction:column;gap:6px;font-size:.86rem;line-height:1.6}
+.gram-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.gram-badge{font-family:var(--en-font);font-weight:600;font-size:.78rem;border:1px solid var(--en);color:var(--en);border-radius:6px;padding:1px 8px}
+.gram-label{font-size:.75rem;color:var(--muted)}
+.gram-struct{font-family:var(--en-font);font-size:.95rem;color:var(--ink);overflow-wrap:anywhere}
+.gram-struct .sep{color:var(--line);margin:0 4px}
+.gram-struct sub{font-size:.62rem;font-weight:700;vertical-align:baseline;position:relative;top:.35em;margin-left:1px;padding:0 3px;border-radius:3px;color:var(--surface)}
+.t-S{background:#3B6FD9}.t-V{background:#C2513A}.t-O{background:#2F8A5B}.t-C{background:#8A5BC2}.t-M{background:#7A8594}
+.gram-text{margin:0;color:var(--ink)}
+.idioms{margin:2px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px}
+.idioms li{color:var(--ink)}
+.idioms b{font-family:var(--en-font);font-weight:600;color:var(--en);margin-right:6px}
+.en.reveal .gram{animation:rise .22s ease-out .1s both}
+
+.en-text{margin:0;font-family:var(--en-font);font-size:clamp(1.3rem,4.4vw,1.8rem);font-weight:600;line-height:1.35;color:var(--en)}
+.en-hidden{font-size:.9rem;color:var(--muted)}
+.en.reveal .en-text{animation:rise .22s ease-out}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.replay{display:flex;gap:8px;margin-top:2px}
+.rp{border:1px solid var(--line);background:transparent;border-radius:8px;padding:4px 10px;font-size:.8rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.rp svg{width:14px;height:14px}
+.rp:disabled{opacity:.4;cursor:default}
+
+.actions{display:grid;grid-template-columns:auto 1fr auto;gap:10px}
+.btn{border-radius:12px;padding:14px 18px;font-weight:700;font-size:1rem;border:1px solid var(--line);background:var(--surface)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn.nav{padding:14px 16px;font-weight:500}
+.grade{display:none;grid-template-columns:1fr 1fr;gap:10px}
+.grade.on{display:grid}
+.btn.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
+.btn.again{background:var(--again-soft);border-color:transparent;color:var(--again)}
+
+.sub{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;justify-content:space-between;font-size:.82rem;color:var(--muted)}
+.sub .grp{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.link{background:none;border:none;padding:4px 0;color:var(--muted);text-decoration:underline;text-underline-offset:3px;font-size:.82rem}
+.link[aria-pressed="true"]{color:var(--ink);font-weight:700}
+
+details.settings{border-top:1px solid var(--line);padding-top:12px;font-size:.88rem}
+details.settings summary{cursor:pointer;color:var(--muted)}
+.set-grid{display:grid;grid-template-columns:auto 1fr;gap:10px 14px;align-items:center;margin-top:12px}
+.set-grid select{width:100%;max-width:100%;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.set-grid input[type=range]{width:100%}
+.note{color:var(--muted);font-size:.8rem;margin:10px 0 0;line-height:1.6}
+.kbd{font-family:var(--en-font);font-size:.75rem;border:1px solid var(--line);border-radius:4px;padding:0 5px}
+
+.empty{padding:40px 28px;text-align:center;color:var(--muted)}
+@media (max-width:480px){
+  .ja{padding:26px 20px 20px}.en{padding:18px 20px 20px}
+  .actions{grid-template-columns:auto 1fr auto;gap:8px}
+  .btn.nav{padding:14px 12px}
+}
+@media (prefers-reduced-motion:reduce){.en.reveal .en-text{animation:none}.track i{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>瞬間英作文</h1>
+    <div class="toggles" role="group" aria-label="音声">
+      <button class="tg" id="tgJa" aria-pressed="true"><span class="dot"></span>日本語の音声</button>
+      <button class="tg en" id="tgEn" aria-pressed="true"><span class="dot"></span>英語の音声</button>
+      <button class="tg auto" id="tgAuto" aria-pressed="false"><span class="dot"></span>自動で進む</button>
+    </div>
+  </header>
+
+  <div class="sets" id="sets" role="group" aria-label="教材"></div>
+  <div class="filters" id="filters" role="group" aria-label="カテゴリー"></div>
+
+  <div class="bar">
+    <div class="track"><i id="prog"></i></div>
+    <span class="count" id="count">0 / 0</span>
+  </div>
+
+  <main class="card" id="card" aria-live="polite">
+    <div class="ja">
+      <div class="cat" id="cat"></div>
+      <p class="ja-text" id="jaText"></p>
+      <div class="replay">
+        <button class="rp" id="rpJa" aria-label="日本語をもう一度再生"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 5.5h2.5L9 2.5v11l-3.5-3H3z"/><path d="M11 5.2a3.5 3.5 0 0 1 0 5.6" stroke="currentColor" fill="none" stroke-width="1.4" stroke-linecap="round"/></svg>日本語</button>
+        <button class="rp" id="rpEn" aria-label="英語をもう一度再生" disabled><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 5.5h2.5L9 2.5v11l-3.5-3H3z"/><path d="M11 5.2a3.5 3.5 0 0 1 0 5.6" stroke="currentColor" fill="none" stroke-width="1.4" stroke-linecap="round"/></svg>English</button>
+      </div>
+    </div>
+    <div class="en" id="enBox"><div class="cd" id="cd"><i></i></div><span class="en-hidden" id="enHidden">英語で言ってから、表示してください</span><p class="en-text" id="enText" hidden></p><div class="gram" id="gram" hidden></div><div class="reply" id="reply" hidden><div class="reply-head">返答の例<button class="rp" id="rpReply" aria-label="返答を再生"><svg viewBox="0 0 16 16" fill="currentColor"><path d="M3 5.5h2.5L9 2.5v11l-3.5-3H3z"/><path d="M11 5.2a3.5 3.5 0 0 1 0 5.6" stroke="currentColor" fill="none" stroke-width="1.4" stroke-linecap="round"/></svg>再生</button></div><p class="reply-en" id="replyEn"></p><p class="reply-ja" id="replyJa"></p></div></div>
+  </main>
+
+  <div class="actions" id="actions">
+    <button class="btn nav" id="prev" aria-label="前の文">前へ</button>
+    <button class="btn primary" id="reveal">英語を表示</button>
+    <button class="btn nav" id="next" aria-label="次の文">次へ</button>
+  </div>
+  <div class="grade" id="grade">
+    <button class="btn again" id="again">言えなかった</button>
+    <button class="btn ok" id="ok">言えた</button>
+  </div>
+
+  <div class="sub">
+    <div class="grp">
+      <button class="link" id="shuffle" aria-pressed="false">シャッフル</button>
+      <button class="link" id="weak" aria-pressed="false">言えなかった文だけ</button>
+      <button class="link" id="tgReply" aria-pressed="true">返答の例</button>
+      <button class="link" id="tgGram" aria-pressed="true">文法</button>
+    </div>
+    <div class="grp"><span id="stat"></span><button class="link" id="reset">記録をリセット</button></div>
+  </div>
+
+  <details class="settings">
+    <summary>音声の設定</summary>
+    <div class="set-grid">
+      <label for="vJa">日本語の声</label><select id="vJa"></select>
+      <label for="vEn">英語の声</label><select id="vEn"></select>
+      <label for="vReply">返答の声</label><select id="vReply"></select>
+      <label for="rateJa">日本語の速さ</label><input type="range" id="rateJa" min="0.8" max="2" step="0.05" value="1.3">
+      <label for="rate">英語の速さ</label><input type="range" id="rate" min="0.6" max="1.3" step="0.05" value="1">
+    </div>
+    <p class="note">音声はお使いの端末・ブラウザに入っている読み上げ音声を使います。自動で最も自然な声を選びますが、変えたい場合は上から選んでください。Mac/iPhone は「Siri」「プレミアム」「拡張」の声、Chrome/Edge は「Google」「Natural」「Online」の声が自然です。<br>キーボード: <span class="kbd">Space</span> 英語を表示・次へ　<span class="kbd">←</span><span class="kbd">→</span> 前後　<span class="kbd">J</span><span class="kbd">E</span> 再生</p>
+  </details>
+</div>
+
+<script>
+const GRAMMAR = {"0": ["SV", "What time(M) / did you(S) / get up(V) / today(M)", "過去形の疑問文。What time で時刻をたずねる。", [["get up", "起きる、起床する"]]], "1": ["SV", "I(S) / didn't sleep(V) / very well(M) / last night(M)", "過去形の否定文。not very well で「あまりよく…ない」。", []], "2": ["SVO", "I(S) / wanted(V) / to sleep a little longer(O)", "want to do（不定詞の名詞的用法）。to sleep 以下が目的語。", []], "3": ["SVO", "Do you(S) / have(V) / any plans(O) / today(M)", "一般動詞の疑問文。疑問文では some ではなく any を使う。", []], "4": ["SVO", "I(S) / don't really have(V) / any plans(O) / today(M)", "否定文の not ... any で「何も…ない」。really を入れると否定が柔らかくなる。", [["not really", "あまり…ない、特に…ない"]]], "5": ["SV", "I(S) / 'm gonna run(V) / to the convenience store(M)", "be going to（gonna）で予定・意志を表す。", [["run to (場所)", "(近くの場所)にちょっと行ってくる"]]], "6": ["SVOC", "Do you(S) / want(V) / me(O) / to get you anything(C)", "want + 人 + to do「人に…してほしい」。to 以下の get you anything は SVOO の形。", [["get (人) (物)", "人に物を買ってくる、取ってくる"]]], "7": ["SVO", "Do you(S) / want(V) / some coffee(O)", "勧める場面の疑問文では any ではなく some を使うのが自然。", []], "8": ["SVC / SVO", "I(S) / 'm(V) / good(C). I(S) / just had(V) / some(O)", "I'm good は丁寧に断る口語表現。just + 過去形で「ついさっき…した」。", [["I'm good.", "大丈夫です、結構です（断るとき）"]]], "9": ["SVO", "Should I(S) / put(V) / this(O) / in the fridge(M)", "Should I ...? で「…した方がいい？」と相手の意見をたずねる。", []], "10": ["SVC + SVO", "I(S) / 'm(V) / hungry(C), but I(S) / don't know(V) / what to eat(O)", "疑問詞 + to 不定詞（what to eat）が名詞のかたまりとして目的語になる。", []], "11": ["SV", "Let's(V) / just eat(V) / at home(M) / today(M)", "Let's + 動詞の原形で「…しよう」。主語は省略されている（命令文の一種）。", []], "12": ["SVC", "This(S) / is(V) / better(C) / than I expected(M)", "比較級 + than ...。than のあとに節（I expected）が続く。", []], "13": ["SVC", "Isn't this(S) / a little too salty(C)", "否定疑問文で「…じゃない？」と同意を求める。too は「…すぎる」。", []], "14": ["SVC", "I(S) / 'm(V) / full(C) / already(M)", "be 動詞 + 形容詞。already は文末に置くと「もう」の意外さが出る。", []], "15": ["SVO", "I(S) / 'm gonna take(V) / a bath(O) / later(M)", "be going to（gonna）で予定を表す。", [["take a bath", "お風呂に入る"]]], "16": ["SVC", "Isn't the AC(S) / a little too cold(C)", "否定疑問文で「…じゃない？」と同意を求める。", []], "17": ["SVO", "Can you(S) / turn(V) / the TV(O) / down(M) / a little(M)", "Can you ...? で気軽な依頼。目的語が名詞なら turn the TV down / turn down the TV のどちらも可。", [["turn (物) down", "(音量・温度など)を下げる"]]], "18": ["SVO", "Where(M) / did I(S) / put(V) / this(O)", "過去形の疑問文。put は過去形も put。", []], "19": ["SV", "It(S) / was(V) / right here(M) / a minute ago(M)", "be 動詞 + 場所で「…にある」。right で場所を強調する。", [["a minute ago", "ついさっき"]]], "20": ["SV", "I(S) / 'm working(V) / from home(M) / today(M)", "現在進行形で「今日は…している」という一時的な状況を表す。", [["work from home", "在宅で働く、リモートワークする"]]], "21": ["SV", "I(S) / gotta go(V) / to the studio(M) / tomorrow(M)", "gotta = have got to（have to）の口語形で「…しなければならない」。", []], "22": ["SVC", "I(S) / 'm(V) / pretty busy(C) / this week(M)", "pretty は口語で「かなり」。", []], "23": ["SVO", "I(S) / don't have(V) / any work(O) / lined up(M) / for next week(M) / yet(M)", "過去分詞 lined up が work を後ろから説明している。否定文の yet で「まだ」。", [["line up", "(予定・仕事など)を確保する、入れておく"]]], "24": ["SV", "This job(S) / 's taking(V) / longer(M) / than I expected(M)", "現在進行形。take longer で「(予想より)時間がかかる」。比較級 + than 節。", []], "25": ["SVO（主節）", "I(S) / think(V) / (that) I'll be done in about an hour(O)", "I think のあとに that 節（that は省略）。中の節は be done で SVC。", [["be done", "終わる、済む"]]], "26": ["SVO", "I(S) / haven't gotten(V) / the footage(O) / yet(M)", "現在完了の否定文 + yet で「まだ…していない」。gotten はアメリカ英語の過去分詞。", []], "27": ["SV", "I(S) / 'm waiting(V) / to hear back from the client(M)", "wait to do で「…するのを待つ」。", [["hear back from (人)", "(人)から返事をもらう"]]], "28": ["SVO", "I(S) / got(V) / a few revisions(O)", "get の過去形 got で「もらった、受けた」。a few は「いくつか」。", []], "29": ["SVC（主節）", "Once I fix this(M), / I(S) / 'm(V) / done(C)", "once は接続詞で「…したら、…するとすぐに」。", [["be done", "終わる、済む"]]], "30": ["SVC", "This footage(S) / doesn't look(V) / as good(C) / as I expected(M)", "not as ... as ～で「～ほど…ではない」。look + 形容詞で「…に見える」。", []], "31": ["SVO（主節）", "I(S) / wonder(V) / if this was shot in 4K(O)", "I wonder if ...で「…かな」。if 節は「…かどうか」。中の節は受動態（was shot）。", []], "32": ["SVC", "The colors(S) / look(V) / a little off(C)", "look + 形容詞で「…に見える」。off は形容詞として「ずれている、おかしい」。", [["off", "(色・味・様子などが)ずれている、いつもと違う"]]], "33": ["SVO", "I(S) / wanna clean up(V) / the skin(O) / a little more here(M)", "wanna = want to。clean up はここでは「整える、修正する」。", [["clean up", "きれいにする、整える"]]], "34": ["SV", "This shot(S) / is taking(V) / forever(M)", "現在進行形。take forever で「ものすごく時間がかかる」。", [["take forever", "ものすごく時間がかかる"]]], "35": ["SV", "It(S) / takes(V) / forever(M) / to save(M)", "It は形式主語で、本当の主語は to save。", [["take forever", "ものすごく時間がかかる"]]], "36": ["SVO（主節）", "I(S) / think(V) / (that) it'd be a lot faster with a new Mac(O)", "it'd = it would。仮定法的な would で「…だったらもっと速いだろう」。a lot は比較級を強める。", []], "37": ["SVO", "I(S) / don't feel like(V) / working(O) / anymore(M) / today(M)", "feel like + 動名詞で「…したい気分だ」。否定文の anymore は「もう…ない」。", [["feel like doing", "…したい気分だ"]]], "38": ["SVO（主節）", "I(S) / think(V) / (that) I'm gonna call it a day(O)", "中の節は call it a day というイディオム。", [["call it a day", "(その日の仕事を)切り上げる、終わりにする"]]], "39": ["SVO", "I(S) / 'll finish(V) / it(O) / tomorrow morning(M)", "will でその場で決めた意志を表す。", []], "40": ["SV", "What time(M) / do the Giants(S) / play(V) / today(M)", "スケジュールが決まった予定には現在形を使う。", []], "41": ["SVO（主節）", "I(S) / wonder(V) / if I can watch the game today(O)", "I wonder if ...で「…かな」。", []], "42": ["SVOC", "I(S) / really want(V) / them(O) / to win(C) / today(M)", "want + 人 + to do で「人に…してほしい」。", []], "43": ["SVC", "This pitcher(S) / 's been(V) / really good(C) / lately(M)", "'s been = has been。現在完了 + lately で「最近ずっと…」。", []], "44": ["SVO", "Why(M) / are they(S) / using(V) / him(O) / here(M)", "現在進行形の疑問文。use は野球では「起用する」。", []], "45": ["SVO", "Why don't they(S) / bat(V) / Okamoto(O) / higher in the lineup(M)", "bat はここでは他動詞「(打順に)置く」なので SVO。Why don't ...? は「なぜ…しないのか」。", []], "46": ["SVO", "I(S) / don't really get(V) / this lineup(O)", "get は口語で「理解する」。not really で「あまり…ない」。", [["get", "わかる、理解する（口語）"]]], "47": ["SVC", "A hit here(S) / would be(V) / huge(C)", "would で「もし…なら」という仮定のニュアンス。huge は「とても大きい、重要な」。", []], "48": ["SVC（主節）", "It(S) / 'd be(V) / amazing(C) / if he hit a home run here(M)", "仮定法過去：if + 過去形, would + 原形。It は形式主語的に if 節の内容を指す。", []], "49": ["SVC", "That(S) / was(V) / a strike(C)?", "平叙文の語順のまま上げ調子で言うと、驚きを込めた疑問になる。", []], "50": ["SVC", "He(S) / was(V) / definitely safe(C)", "be 動詞 + 形容詞。definitely で「間違いなく」。", []], "51": ["SVOO", "Show(V) / me(O) / that replay(O) / again(M)", "命令文（主語なし）。show + 人 + 物で「人に物を見せる」。", []], "52": ["SVC", "Isn't the umpire(S) / a little tough(C) / today(M)", "否定疑問文で「…じゃない？」と同意を求める。", []], "53": ["SV", "This guy(S) / throws(V) / hard(M)", "hard は副詞で「強く、速く」。", []], "54": ["SV", "That(S) / went(V) / farther(M) / than I thought(M)", "比較級 + than 節。farther は far の比較級（距離）。", []], "55": ["SV", "I(S) / wanna go(V) / to this ballpark(M) / someday(M)", "wanna = want to。", []], "56": ["SVO", "I(S) / wanna watch(V) / more MLB games(O) / next year(M)", "wanna = want to。", []], "57": ["SVO", "I(S) / 've been watching(V) / a lot of Blue Jays games(O) / lately(M)", "現在完了進行形で「最近ずっと…している」。", []], "58": ["SVO", "I(S) / usually check(V) / the scores(O) / first thing in the morning(M)", "現在形で習慣を表す。", [["first thing in the morning", "朝一番に"]]], "59": ["SVC", "Days without baseball(S) / feel(V) / kinda boring(C)", "feel + 形容詞で「…に感じる」。kinda = kind of（ちょっと）。", []], "60": ["SVO", "I(S) / 've been studying(V) / English(O) / a little every day(M) / lately(M)", "現在完了進行形で「最近ずっと…している」。", []], "61": ["SVO", "I(S) / 've been studying(V) / English(O) / for about five years now(M)", "現在完了進行形 + for 期間で「…の間ずっと…している」。", []], "62": ["SVO（主節）", "I(S) / think(V) / (that) my listening's gotten better(O)", "中の節は現在完了 has gotten + 形容詞（SVC）で「よくなった」。", []], "63": ["SVO", "But I(S) / still have(V) / trouble(O) / when native speakers talk fast(M)", "when 節で「…するとき」。", [["have trouble", "苦労する、困る"]]], "64": ["SVO + SVO", "Sometimes I(S) / hear(V) / the words(O), but I(S) / can't process(V) / them(O) / fast enough(M)", "enough は形容詞・副詞の後ろに置く（fast enough）。", []], "65": ["SVO", "I(S) / 've seen(V) / this word(O) / before(M)", "現在完了（経験）で「前に…したことがある」。", []], "66": ["SVO", "What(O) / does this(S) / mean(V) / again(M)", "文末の again は「…だっけ？」と思い出そうとするニュアンス。", []], "67": ["SVO", "Do people(S) / actually say(V) / this(O) / in everyday conversation(M)", "people は「一般の人々」。actually で「実際に」。", []], "68": ["SV", "Is there(V) / a more natural way to say this(S)", "There is 構文の疑問文。to say this は way を説明する不定詞（形容詞的用法）。", []], "69": ["SVC + SVC", "It(S) / 's(V) / grammatically correct(C), but it(S) / sounds(V) / a little unnatural(C)", "sound + 形容詞で「…に聞こえる」。", []], "70": ["SV", "Why(M) / is this(S) / in the past tense(M)", "be 動詞 + 前置詞句で「…の状態にある」。", []], "71": ["SVO", "Do I(S) / need(V) / \"the\"(O) / here(M)", "一般動詞の疑問文。", []], "72": ["SVO", "Can you(S) / say(V) / this(O) / in the passive voice(M)", "in + 言語・形式で「…で（言う）」。", []], "73": ["SVO", "I(S) / don't really get(V) / the difference between these two(O)", "get は口語で「理解する」。", [["get", "わかる、理解する（口語）"]]], "74": ["SVO + SVC", "I(S) / know(V) / what it means(O), but it(S) / 's(V) / hard(C) / for me to use it myself(M)", "what it means は間接疑問（名詞節）。It's hard for 人 to do は形式主語構文。", []], "75": ["SVO + SVO", "I(S) / knew(V) / the word(O), but I(S) / couldn't catch(V) / it(O)", "catch はここでは「聞き取る」。", [["catch", "聞き取る"]]], "76": ["SVO", "I(S) / can understand(V) / most of it(O) / with subtitles(M)", "with は「…があれば、…を使って」。", []], "77": ["SVO", "I(S) / wanna be able to understand(V) / it(O) / without subtitles(M)", "want to + be able to で「…できるようになりたい」。can は to の後に置けないので be able to を使う。", []], "78": ["SVO", "I(S) / 've been doing(V) / more reproduction practice(O) / than shadowing(M) / lately(M)", "現在完了進行形。more ... than ～の比較。", []], "79": ["SVO", "I(S) / wanna get into(V) / the habit of thinking in English(O)", "of + 動名詞が habit の内容を説明する。", [["get into the habit of doing", "…する習慣をつける"]]], "80": ["SV", "What time(M) / should I(S) / leave(V) / tomorrow(M)", "should で「…すべき、…したらいい」。", []], "81": ["SVO", "How long(O) / does it(S) / take(V) / to get there(M) / by car(M)", "It takes + 時間 + to do で「…するのに時間がかかる」。How long がその時間をたずねる。", [["get there", "そこに着く"]]], "82": ["SVC", "Would it(S) / be(V) / faster(C) / to take the train(M)", "It は形式主語で本当の主語は to take the train。Would で控えめにたずねる。", []], "83": ["SVC", "It(S) / 's(V) / more crowded(C) / than I expected(M) / today(M)", "比較級 + than 節。It は状況を表す。", []], "84": ["SVO（主節）", "I(S) / wonder(V) / if there's any parking(O)", "I wonder if ...で「…かな」。中の節は There is 構文。", []], "85": ["SVO", "I(S) / 'd prefer(V) / an aisle seat(O) / if possible(M)", "I'd prefer = I would prefer。would で控えめな希望を表す。", [["if possible", "できれば"]]], "86": ["SVC", "It(S) / doesn't have to be(V) / near the front(C)", "don't have to で「…する必要はない」。", []], "87": ["SVO", "Do we(S) / need(V) / a reservation(O) / here(M)", "一般動詞の疑問文。", []], "88": ["SVO", "Do you(S) / take(V) / credit cards(O)", "take はここでは「(支払い方法を)受け付ける」。", [["take (カード)", "(カードなど)が使える、受け付ける"]]], "89": ["SV", "Can I(S) / pay(V) / contactless(M)", "contactless は副詞的に使われていて「非接触で」。", []], "90": ["SVO", "Can I(S) / try(V) / this(O) / on(M)", "目的語が代名詞のときは try this on の語順になる（try on this は不可）。", [["try (物) on", "試着する"]]], "91": ["SVO", "Do you(S) / have(V) / this(O) / in a smaller size(M)", "in + サイズ・色で「…の（もの）」。", []], "92": ["SVOC", "Let(V) / me(O) / think about it(C)", "let + 人 + 動詞の原形（使役）で「人に…させる」。命令文の形。", [["Let me think about it.", "ちょっと考えさせてください"]]], "93": ["SVC", "It(S) / 's(V) / more expensive(C) / than I thought(M)", "比較級 + than 節。", []], "94": ["SVC", "It(S) / might be(V) / cheaper(C) / online(M)", "might で「…かもしれない」。", []], "95": ["SVO（主節）", "I(S) / wonder(V) / if there are any good places to eat around here(O)", "to eat は places を説明する不定詞（形容詞的用法）。", [["around here", "この辺で"]]], "96": ["SV", "I(S) / don't wanna go(V) / too far(M)", "wanna = want to。too far で「遠すぎる（ところ）」。", []], "97": ["SV + SVO", "We(S) / 're(V) / here(M), so we(S) / might as well check(V) / it(O) / out(M)", "might as well で「…してもいいだろう、…した方がいい」。", [["might as well", "(どうせなら)…した方がいい"], ["check (物) out", "見てみる、行ってみる"]]], "98": ["SVO", "I(S) / 've always wanted(V) / to come here(O)", "現在完了（継続）+ always で「ずっと…したかった」。", []], "99": ["SVC", "It(S) / was(V) / way better(C) / than I expected(M)", "way は比較級を強めて「ずっと、はるかに」（口語）。", []], "100": ["SV", "Can I(S) / check in(V) / for this flight(M) / here(M)", "Can I ...? で「…できますか」と許可・可能をたずねる。", [["check in", "搭乗手続き・宿泊手続きをする"]]], "101": ["SV", "Can I(S) / switch(V) / to an aisle seat(M) / if one's available(M)", "one は前に出た名詞（aisle seat）の繰り返しを避ける代名詞。", [["switch to", "…に変更する、切り替える"]]], "102": ["SVO", "I(S) / 'd prefer(V) / an aisle seat(O) / near the front(M) / if possible(M)", "I'd prefer で控えめな希望を表す。", [["if possible", "できれば"]]], "103": ["SVO", "Should I(S) / check(V) / this bag(O)", "check はここでは「(荷物を)預ける」。", [["check (荷物)", "(空港で荷物を)預ける"]]], "104": ["SVO", "Can I(S) / take(V) / this(O) / on the plane(M)", "take + 物 + 場所で「…に持っていく」。", []], "105": ["SVO", "Can you(S) / check(V) / my bag(O) / all the way through to my final destination(M)", "all the way で「ずっと、最後まで」。", [["check (荷物) through", "(荷物を)最終目的地まで通しで預ける"]]], "106": ["SVO", "Do I(S) / need to pick up(V) / my bag(O) / during the layover(M)", "need to do で「…する必要がある」。", [["pick up", "受け取る、取りに行く"], ["layover", "乗り継ぎ、乗り継ぎ待ち"]]], "107": ["SV", "Where(M) / 's(V) / the gate for my next flight(S)", "Where's = Where is。疑問詞が前に出て be 動詞と主語が倒置。", []], "108": ["SVC", "Is this(S) / enough time(C) / to make my connection(M)", "to make ... は time を説明する不定詞。", [["make a connection", "乗り継ぎに間に合う"]]], "109": ["SV", "Where(M) / 's(V) / the lounge(S)", "Where's = Where is。", []], "110": ["SV", "Can I(S) / get(V) / into the lounge(M) / with this card(M)", "get into で「…に入る」。", [["get into", "…に入る"]]], "111": ["SV", "What time(M) / does boarding(S) / start(V)", "決まったスケジュールには現在形を使う。", []], "112": ["SVC", "Is this flight(S) / delayed(C)", "delayed は過去分詞が形容詞化したもの（受動態とも取れる）。", []], "113": ["SVO", "I(S) / just wanna make sure(V) / (that) the gate hasn't changed(O)", "make sure + that 節で「…を確かめる」。中の節は現在完了。", [["make sure", "確かめる、確認する"]]], "114": ["SVO", "How long(O) / does security(S) / usually take(V)", "take + 時間で「時間がかかる」。security はここでは「保安検査」。", []], "115": ["SVC", "Is this(S) / my seat(C)", "be 動詞の疑問文。", []], "116": ["SVO", "Can I(S) / put(V) / my bag(O) / up here(M)", "up here で「この上に」。", []], "117": ["SV", "Can I(S) / get by(V)", "Can I ...? で許可を求める。", [["get by", "(人の横を)通り抜ける"]]], "118": ["SVO", "Do you(S) / mind(V) / if I recline my seat a little(O)", "Do you mind if ...? は「…してもいいですか」。答えは No（構わない）で OK を表す。", [["Do you mind if ...?", "…してもかまいませんか"]]], "119": ["SVO", "Can I(S) / get(V) / some water(O)", "Can I get ...? は注文・お願いの定番表現。依頼なので some を使う。", [["Can I get ...?", "…をもらえますか"]]], "120": ["SVO", "Can I(S) / get(V) / another coffee(O)", "another で「もう1つ」。coffee はここでは数えられる「1杯のコーヒー」。", [["Can I get ...?", "…をもらえますか"]]], "121": ["SVC", "What(C) / 's(V) / this(S)", "What's = What is。", []], "122": ["SVO", "Which one(O) / would you(S) / recommend(V)", "would で丁寧にたずねる。", []], "123": ["—（省略文）", "How much longer / until we land", "文の一部が省略された口語表現（How much longer is it until ...）。until 節は「…まで」。", []], "124": ["SVO", "Do I(S) / need to fill out(V) / an arrival card(O)", "need to do で「…する必要がある」。", [["fill out", "(用紙に)記入する"]]], "125": ["SV", "I(S) / 'm(V) / here(M) / on vacation(M)", "be 動詞 + 場所で「…にいる」。", [["on vacation", "休暇で"]]], "126": ["SV", "I(S) / 'm staying(V) / for five days(M)", "現在進行形で確定した予定を表す。", []], "127": ["SV", "I(S) / 'm staying(V) / at this hotel(M)", "現在進行形で確定した予定・一時的な状況を表す。", []], "128": ["SV", "My flight back(S) / is(V) / on Sunday(M)", "be 動詞 + 時を表す語句。曜日には on を使う。", []], "129": ["SV", "My bag(S) / still hasn't come out(V)", "現在完了の否定文 + still で「まだ…していない」（still は否定語の前）。", [["come out", "出てくる"]]], "130": ["SVC", "Is this(S) / the right carousel(C) / for this flight(M)", "right は「正しい、合っている」。", []], "131": ["SVO", "I(S) / can't find(V) / my suitcase(O)", "can't で「…できない」。", []], "132": ["SVO", "Where(M) / can I(S) / get(V) / a SIM card(O)", "get は口語で「手に入れる、買う」。", []], "133": ["SV", "Where(M) / 's(V) / the Uber pickup area(S)", "Where's = Where is。", [["pickup area", "(車の)乗り場"]]], "134": ["SVO", "Can I(S) / get(V) / a Grab(O) / from here(M)", "get a + 配車サービス名で「…を呼ぶ」（口語）。", []], "135": ["SVO", "I(S) / 'd like(V) / to check in(O)", "I'd like to = I would like to で「…したいのですが」（丁寧）。", [["check in", "宿泊・搭乗手続きをする"]]], "136": ["SV", "The reservation(S) / 's(V) / under my name(M)", "under + 名前で「…の名前で」。", [["under (名前)", "…の名前で（予約）"]]], "137": ["SVO（主節）", "I(S) / guess(V) / (that) the room isn't ready yet(O), right?", "I guess で「…ですよね」と推測。文末の right? で確認する。", []], "138": ["SVO", "Can you(S) / hold(V) / my bags(O) / until the room's ready(M)", "until 節は未来のことでも現在形を使う。", [["hold", "(荷物を)預かる"]]], "139": ["SVOC", "Can you(S) / let(V) / me(O) / know(C) / when the room's ready(M)", "let + 人 + 原形で「人に…させる」。let me know で「知らせて」。", [["let (人) know", "(人)に知らせる"]]], "140": ["SV", "What time(M) / does breakfast(S) / start(V)", "決まったスケジュールには現在形を使う。", []], "141": ["SVC", "Is breakfast(S) / included(C)", "be + 過去分詞（受動態）で「含まれている」。", []], "142": ["SVC", "What(C) / 's(V) / the Wi-Fi password(S)", "What's = What is。", []], "143": ["SVC", "How late(M) / is the pool(S) / open(C)", "How late で「何時まで」。open は形容詞。", []], "144": ["SVC", "Is the gym(S) / open(C) / 24 hours(M)", "open は形容詞で「開いている」。", []], "145": ["SV", "The AC in my room(S) / isn't working(V) / very well(M)", "work は機械などが「正常に動く」。", []], "146": ["SV", "There's(V) / no hot water(S) / in the shower(M)", "There is 構文。no + 名詞で「…がない」。", []], "147": ["SVO", "Can I(S) / get(V) / two more towels(O)", "数 + more で「あと…個」。", [["Can I get ...?", "…をもらえますか"]]], "148": ["SVO", "We(S) / don't need(V) / housekeeping(O) / today(M)", "housekeeping は「客室清掃」。", []], "149": ["SV", "What time(M) / does housekeeping(S) / usually come(V) / tomorrow(M)", "usually で「ふだんは、たいてい」。", []], "150": ["SVO", "Can I(S) / get(V) / a late checkout(O)", "Can I get ...? で依頼する。", [["late checkout", "レイトチェックアウト"]]], "151": ["SV", "How late(M) / can I(S) / check out(V)", "How late で「何時まで」。", [["check out", "チェックアウトする"]]], "152": ["SVC", "How much extra(C) / is it(S)", "How much で金額をたずねる。extra は「追加の（料金）」。", []], "153": ["SVO", "Can you(S) / hold(V) / my bags(O) / after I check out(M)", "after 節は未来のことでも現在形。", [["hold", "(荷物を)預かる"], ["check out", "チェックアウトする"]]], "154": ["SVO", "Can I(S) / still use(V) / the pool(O) / after I check out(M)", "still で「まだ、引き続き」。", [["check out", "チェックアウトする"]]], "155": ["SVO", "Do you(S) / have(V) / a table for two(O)", "Do you have a table for ...? はお店で席をたずねる定番表現。", []], "156": ["SVO + SVC", "We(S) / don't have(V) / a reservation(O). Is that(S) / okay(C)", "Is that okay? で「大丈夫ですか」。", []], "157": ["SVO", "Do you(S) / have(V) / any tables outside(O)", "outside は副詞で tables を後ろから説明。", []], "158": ["SVO", "Could we(S) / get(V) / a quieter table(O) / if possible(M)", "Could で丁寧な依頼。比較級 quieter で「もっと静かな」。", [["if possible", "できれば"]]], "159": ["SVO", "Can we(S) / see(V) / the menu(O)", "Can we ...? で許可・依頼。", []], "160": ["SV", "What(M) / 's this dish(S) / like(V)", "What's ... like? で「…はどんな感じ？」。like は前置詞で What が目的語。", [["What's ... like?", "…はどんな感じですか"]]], "161": ["SVC", "Is this(S) / spicy(C)", "be 動詞の疑問文。", []], "162": ["SVOC", "Can you(S) / make(V) / it(O) / not too spicy(C)", "make + O + 形容詞で「O を…にする」。", []], "163": ["SVC", "What(C) / 's(V) / the most popular dish here(S)", "最上級 the most + 形容詞。", []], "164": ["SVO", "What(O) / would you(S) / recommend(V)", "would で丁寧にたずねる。", []], "165": ["SVO", "I(S) / 'm trying to decide(V) / between this and this(M)", "try to do で「…しようとしている」。between A and B で「A と B のどちらか」。", []], "166": ["SVO", "I(S) / 'll have(V) / this one(O)", "注文するとき、その場で決めたことは will で表す。have は「食べる、注文する」。", []], "167": ["SVC", "Is it(S) / okay(C) / if we share this(M)", "Is it okay if ...? で「…してもいいですか」。", []], "168": ["SV", "We(S) / 're still waiting(V) / on one of our dishes(M)", "wait on はアメリカ口語で wait for と同じ「…を待つ」。", [["wait on", "…を待つ（米口語）"]]], "169": ["SVC", "This(S) / isn't(V) / what I ordered(C)", "what I ordered は関係代名詞 what の節で「私が注文したもの」。", []], "170": ["SVO", "Can we(S) / get(V) / some more water(O)", "some more で「もう少し」。", [["Can I get ...?", "…をもらえますか"]]], "171": ["SVC", "This(S) / is(V) / really good(C)", "be 動詞 + 形容詞。", []], "172": ["SVC", "It(S) / 's(V) / spicier(C) / than I expected(M)", "比較級 + than 節。", []], "173": ["SVC", "I(S) / 'm(V) / stuffed(C)", "stuffed は「お腹いっぱい」（full より強い口語）。", [["I'm stuffed.", "もうお腹いっぱい"]]], "174": ["SVO", "Can we(S) / get(V) / the rest(O) / to go(M)", "to go で「持ち帰り用に」。", [["to go", "持ち帰りで"]]], "175": ["SVO", "Can we(S) / get(V) / the check(O)", "check はアメリカ英語で「伝票、お会計」。", [["the check", "お会計、伝票（米）"]]], "176": ["SVO", "Can we(S) / split(V) / the check(O)", "split は「分ける」。", [["split the check", "別々に払う、割り勘にする"]]], "177": ["SV", "I(S) / 'll pay(V) / by card(M)", "by + 支払い方法（冠詞なし）で「…で」。", []], "178": ["SVC", "Is the tip(S) / already included(C)", "be + 過去分詞（受動態）。already は be 動詞と過去分詞の間。", []], "179": ["SVO", "Can you(S) / take(V) / me(O) / here(M)", "地図などを見せながら here を使う。", []], "180": ["SVO", "How long(O) / does it(S) / take(V) / to get there(M)", "It takes + 時間 + to do の疑問文。", [["get there", "そこに着く"]]], "181": ["SVC", "Is traffic(S) / bad(C) / right now(M)", "traffic は数えられない名詞で「交通（量）」。", []], "182": ["SVO", "You(S) / can drop(V) / me(O) / off(M) / here(M)", "目的語が代名詞のときは drop me off の語順になる。", [["drop (人) off", "(車から人を)降ろす"]]], "183": ["SVC", "Is this(S) / the right place(C)", "right は「正しい、合っている」。", []], "184": ["SV", "Where(M) / are you(S) / right now(M)", "be 動詞 + 場所で「…にいる」。", []], "185": ["SV", "I(S) / 'm(V) / right in front of the entrance(M)", "in front of で「…の前に」。right で位置を強調。", [["in front of", "…の前に"]]], "186": ["SVO", "I(S) / 'm wearing(V) / black(O)", "現在進行形の wear で「今…を着ている」。", []], "187": ["SV", "About how many minutes away(M) / are(V) / you(S)", "be 動詞 + 時間 + away で「…離れたところにいる」。About で「だいたい」。", []], "188": ["SVO", "Can I(S) / get(V) / a taxi(O) / from here(M) / on the way back(M)", "get a taxi で「タクシーをつかまえる、呼ぶ」。", [["on the way back", "帰りに"]]], "189": ["SVO", "Do you(S) / have(V) / this(O) / in another size(M)", "in + サイズ・色で「…の（もの）」。", []], "190": ["SVO", "Do you(S) / have(V) / a smaller one(O)", "one は前に出た名詞の繰り返しを避ける代名詞。", []], "191": ["SV", "Where(M) / 's(V) / the fitting room(S)", "Where's = Where is。", []], "192": ["SVO", "Do you(S) / have(V) / this(O) / in black(M)", "in + 色で「…色の（もの）」。", []], "193": ["SV", "I(S) / 'm gonna think(V) / about it(M)", "gonna = going to。断るときの柔らかい言い方。", []], "194": ["SV", "I(S) / might come back(V) / later(M)", "might で「…かもしれない」。", [["come back", "戻ってくる"]]], "195": ["SVO", "Do you(S) / take(V) / cards(O)", "take はここでは「(支払い方法を)受け付ける」。", [["take (カード)", "(カードなど)が使える、受け付ける"]]], "196": ["SVOC", "Can I(S) / get(V) / this(O) / tax-free(C)", "get + O + 形容詞で「O を…の状態で手に入れる」。", []], "197": ["SV", "What time(M) / do you(S) / close(V)", "お店の営業時間は現在形でたずねる。", []], "198": ["SVC", "Is it(S) / okay(C) / if I take a picture(M)", "Is it okay if ...? で「…してもいいですか」。", [["take a picture", "写真を撮る"]]], "199": ["SVO", "Could you(S) / take(V) / a picture of us(O)", "Could you ...? で丁寧な依頼。", [["take a picture", "写真を撮る"]]], "200": ["SVO", "Could you(S) / take(V) / one more(O)", "one は picture の繰り返しを避ける代名詞。", []], "201": ["SV", "Is there(V) / anywhere around here(S) / you'd recommend(M)", "There is 構文。you'd recommend は anywhere を後ろから説明する節（関係詞の省略）。", [["around here", "この辺で"]]], "202": ["SV", "Is it(S) / within walking distance(M)", "within で「…以内に」。", [["within walking distance", "歩いて行ける距離に"]]], "203": ["SV", "Where(M) / 's(V) / the closest entrance from here(S)", "最上級 closest で「一番近い」。", []], "204": ["SVO", "I(S) / 've wanted(V) / to come here(O) / for a long time(M)", "現在完了（継続）+ for 期間で「ずっと…したかった」。", []], "205": ["SVC", "It(S) / 's(V) / my first time(C) / here(M)", "It's my first time で「初めてです」。", []], "206": ["SV", "I(S) / 've been(V) / here(M) / once before(M)", "have been + 場所で「…に行ったことがある」（経験）。", []], "207": ["SV", "I(S) / 'm(V) / from Japan(M)", "be from で出身を表す。", [["be from", "…出身だ"]]], "208": ["SVO", "Could you(S) / bring(V) / the dishes(O) / out(M) / one at a time(M)", "Could you ...? で丁寧な依頼。", [["bring (物) out", "(料理などを)運んでくる、出す"], ["one at a time", "一度に1つずつ"]]], "209": ["SVC", "Is this place(S) / closed(C) / today(M)", "closed は形容詞で「閉まっている、休み」。", []], "210": ["SVC", "I(S) / 've been(V) / pretty busy(C) / lately(M)", "現在完了（継続）+ lately で「最近ずっと…」。", []], "211": ["SVO", "I(S) / don't really have(V) / a favorite player(O) / right now(M)", "not really で「特に…ない」。", [["not really", "あまり…ない、特に…ない"]]], "212": ["SVC", "My favorite player(S) / used to be(V) / Kazuma Okamoto(C)", "used to + 原形で「以前は…だった（今は違う）」。", [["used to", "以前は…だった"]]], "213": ["SV", "We(S) / mostly talk(V) / about baseball(M)", "talk about で「…について話す」。mostly は「ほとんど、主に」。", []], "214": ["SVO", "I(S) / usually watch(V) / the game(O) / with some beer and food(M)", "現在形で習慣を表す。with で「…と一緒に、…を伴って」。", []], "215": ["SV", "I(S) / chat(V) / with my friends online(M) / while I watch the game(M)", "while 節で「…している間に」。", []], "216": ["SVO", "They(S) / almost lost(V) / the game(O)", "almost + 過去形で「もう少しで…するところだった（実際はしていない）」。", []], "217": ["SV", "They(S) / missed out on(V) / the championship(M)", "miss out on をひとまとまりの動詞と見れば SVO。", [["miss out on", "…を逃す、…の機会を逃す"]]], "218": ["SV", "They(S) / can't hit(V) / with runners in scoring position(M)", "with + 名詞 + 前置詞句で「…が…の状態で」（付帯状況）。", [["in scoring position", "得点圏に"]]], "219": ["SVC", "It(S) / 's(V) / really frustrating(C) / to watch(M)", "It は形式主語で本当の主語は to watch。frustrating は「イライラさせる」。", []], "220": ["SVO", "I(S) / love(V) / her powerful voice(O)", "形容詞 powerful が voice を前から説明。", []], "221": ["SVC", "She(S) / 's(V) / a really good singer(C)", "good + 職業名詞で「…が上手い」。", []], "222": ["SVO", "I(S) / can't pick(V) / just one song(O)", "just で「…だけ」。", []], "223": ["SVO", "I(S) / like(V) / pretty much all of their songs(O)", "pretty much で「ほとんど」（口語）。", [["pretty much", "ほとんど、だいたい"]]], "224": ["SVO", "I(S) / often watch(V) / their live performances(O) / on YouTube(M)", "頻度の副詞 often は一般動詞の前。", []], "225": ["SVC", "They(S) / 're(V) / an eight-member group(C)", "数字-名詞（ハイフンつき）が形容詞になるとき、名詞は単数（eight-member）。", []], "226": ["SV", "The camera(S) / stays(V) / in one place(M)", "stay で「…のままでいる」。", []], "227": ["SVOC", "So I(S) / can clearly see(V) / everyone(O) / dancing(C)", "see + O + -ing で「O が…しているのを見る」（知覚動詞）。", []]};
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function gramHTML(i){
+  const g=GRAMMAR[i]; if(!g) return '';
+  const struct=esc(g[1]).replace(/\((S|V|O|C|M)\)/g,'<sub class="t-$1">$1</sub>').replace(/ \/ /g,'<span class="sep">/</span>');
+  let h='<div class="gram-head"><span class="gram-label">文型</span><span class="gram-badge">'+esc(g[0])+'</span></div>';
+  h+='<div class="gram-struct">'+struct+'</div><p class="gram-text">'+esc(g[2])+'</p>';
+  if(g[3].length){ h+='<ul class="idioms">'+g[3].map(x=>'<li><b>'+esc(x[0])+'</b>'+esc(x[1])+'</li>').join('')+'</ul>'; }
+  return h;
+}
+const REPLIES = {"0": ["Around seven. I slept in a little.", "7時くらい。ちょっと寝坊した。"], "3": ["Not really. Why, do you wanna do something?", "特にないよ。なんで、何かしたいの？"], "6": ["Can you grab me some milk?", "牛乳買ってきてくれる？"], "7": ["Sure, I'd love some.", "うん、飲みたい。"], "9": ["Yeah, it'll go bad if you leave it out.", "うん、出しっぱなしだと傷むよ。"], "13": ["Yeah, it's a little strong.", "うん、ちょっと濃いね。"], "16": ["Yeah, let me turn it up a bit.", "そうだね、ちょっと温度上げるね。"], "17": ["Oh, sorry. Is this better?", "あ、ごめん。これでいい？"], "18": ["Didn't you leave it on the table?", "テーブルに置いてなかった？"], "40": ["I think it starts at six.", "6時からだと思う。"], "44": ["Maybe they want a lefty against this guy.", "このバッターには左を当てたいんじゃない？"], "45": ["I know, right? He should be batting third.", "だよね。3番で使うべきだよ。"], "49": ["Yeah, it caught the corner.", "うん、コースいっぱいだったね。"], "52": ["Yeah, his zone's pretty tight.", "うん、ゾーンがかなり狭いね。"], "66": ["It means \"to give up.\"", "「諦める」って意味だよ。"], "67": ["Yeah, you hear it all the time.", "うん、しょっちゅう聞くよ。"], "68": ["Yeah, you could just say \"I'm down.\"", "うん、「I'm down」でいいと思う。"], "70": ["Because it's talking about something that already happened.", "もう起きたことの話だからだよ。"], "71": ["Yeah, because you're talking about a specific one.", "うん、特定のものの話だからね。"], "72": ["Yeah, but it sounds a little stiff.", "できるけど、ちょっと堅く聞こえるね。"], "80": ["If you leave around eight, you should be fine.", "8時くらいに出れば大丈夫だと思う。"], "81": ["About an hour, depending on traffic.", "渋滞次第だけど、1時間くらいかな。"], "82": ["Yeah, probably. The roads get pretty packed around then.", "たぶんね。その時間は道がかなり混むから。"], "87": ["I don't think so. We can probably just walk in.", "いらないと思う。たぶん普通に入れるよ。"], "88": ["Yes, we take all major cards.", "はい、主要なカードは使えます。"], "89": ["Yeah, just tap it here.", "はい、ここにタッチしてください。"], "90": ["Of course. The fitting rooms are right over there.", "もちろんです。試着室はあちらです。"], "91": ["Let me check in the back for you.", "奥を確認してきますね。"], "100": ["Yes, can I see your passport, please?", "はい、パスポートを見せていただけますか？"], "101": ["Let me check. Yeah, there's one open in row twelve.", "確認しますね。12列目が空いてます。"], "103": ["Yeah, it's a little too big for a carry-on.", "はい、機内持ち込みには少し大きいですね。"], "104": ["Yes, that's fine as long as it fits in the overhead bin.", "はい、上の棚に収まれば大丈夫です。"], "105": ["Yes, it'll go straight through to your final destination.", "はい、最終目的地までそのまま届きます。"], "106": ["No, you don't. It'll be transferred automatically.", "いいえ、自動で積み替えられます。"], "107": ["It's gate 32. Just follow the signs.", "32番ゲートです。案内表示に沿って行ってください。"], "108": ["You should be fine. You've got about an hour and a half.", "大丈夫だと思いますよ。1時間半くらいあるので。"], "109": ["Go up the escalator and it's on your left.", "エスカレーターを上がって左側です。"], "110": ["Let me see. Yes, you can use it here.", "拝見しますね。はい、こちらで使えます。"], "111": ["Boarding starts at 2:30.", "搭乗は2時半からです。"], "112": ["Yeah, it's delayed about thirty minutes.", "はい、30分ほど遅れています。"], "114": ["Usually about twenty minutes, but it can get busy in the morning.", "普段は20分くらいですが、朝は混むことがあります。"], "115": ["Let me see your boarding pass. Yes, it's this one.", "搭乗券を見せてください。はい、こちらです。"], "116": ["Sure, go ahead.", "はい、どうぞ。"], "117": ["Oh, sure. Sorry about that.", "あ、どうぞ。すみません。"], "118": ["No, go ahead.", "いえ、どうぞ。"], "119": ["Sure, I'll bring it right over.", "はい、すぐお持ちします。"], "120": ["Of course. Cream and sugar?", "かしこまりました。ミルクと砂糖はいりますか？"], "121": ["That's chicken with rice.", "チキンとライスです。"], "122": ["The chicken's pretty popular.", "チキンが人気ですよ。"], "123": ["We should be landing in about forty minutes.", "あと40分ほどで着陸予定です。"], "124": ["No, you don't need one for this country.", "いいえ、この国では必要ありません。"], "130": ["Yes, bags from your flight will come out here.", "はい、その便の荷物はここに出てきます。"], "132": ["There's a shop right past the exit.", "出口を出てすぐのところにお店がありますよ。"], "133": ["Go out this exit and turn right. You'll see the signs.", "この出口を出て右です。表示がありますよ。"], "134": ["Yeah, the pickup area's just outside.", "はい、乗り場はすぐ外にあります。"], "137": ["Not yet, sorry. It should be ready around two.", "すみません、まだです。2時ごろには準備できると思います。"], "138": ["Of course. I'll give you a tag for your bags.", "もちろんです。お荷物の札をお渡ししますね。"], "139": ["Sure, we'll send you a message when it's ready.", "はい、準備ができたらメッセージでお知らせします。"], "140": ["It starts at 6:30 on the second floor.", "2階で6時半からです。"], "141": ["Yes, it's included in your rate.", "はい、料金に含まれています。"], "142": ["It's on the card in your room key sleeve.", "ルームキーのケースに書いてあります。"], "143": ["It's open until ten.", "10時まで開いてます。"], "144": ["Yes, you can use your room key to get in.", "はい、ルームキーで入れます。"], "147": ["Sure, I'll send some up right away.", "はい、すぐにお部屋にお持ちします。"], "149": ["Usually between ten and two.", "だいたい10時から2時の間です。"], "150": ["Let me check. We can do one o'clock.", "確認しますね。1時まで大丈夫です。"], "151": ["We can extend it until two at the latest.", "最大2時まで延長できます。"], "152": ["It's thirty dollars.", "30ドルです。"], "153": ["Of course. Just bring them to the front desk.", "もちろんです。フロントまでお持ちください。"], "154": ["Yes, you're welcome to use it for the rest of the day.", "はい、その日は引き続きご利用いただけます。"], "155": ["Sure, right this way.", "はい、こちらへどうぞ。"], "156": ["No problem. We have a table open right now.", "大丈夫です。今ちょうど空いてます。"], "157": ["Yeah, we have one open. Follow me.", "はい、1つ空いてます。どうぞ。"], "158": ["Sure, how about that one in the corner?", "はい、あちらの角の席はいかがですか？"], "159": ["Of course. Here you go.", "もちろんです。どうぞ。"], "160": ["It's grilled pork with a sweet soy sauce.", "甘めの醤油ダレで焼いた豚肉です。"], "161": ["It's a little spicy, but not too bad.", "少し辛いですけど、そこまでではないです。"], "162": ["Sure, I'll let the kitchen know.", "はい、キッチンに伝えておきます。"], "163": ["The noodles are our most popular dish.", "麺料理が一番人気です。"], "164": ["I'd go with the fish. It's really good.", "魚料理がおすすめです。すごく美味しいですよ。"], "167": ["Of course. I'll bring an extra plate.", "もちろんです。取り皿をお持ちしますね。"], "170": ["Sure, I'll be right back.", "はい、すぐお持ちします。"], "174": ["Of course. I'll box it up for you.", "もちろんです。お包みしますね。"], "175": ["Sure, I'll be right back with it.", "はい、すぐにお持ちします。"], "176": ["Sure, no problem.", "はい、大丈夫です。"], "178": ["Yes, there's a service charge already included.", "はい、サービス料がすでに含まれています。"], "179": ["Sure. It'll take about twenty minutes.", "はい。20分くらいかかります。"], "180": ["About fifteen minutes if traffic's okay.", "道が空いていれば15分くらいです。"], "181": ["It's not too bad right now.", "今はそんなに混んでないですよ。"], "183": ["Yeah, it's right here.", "はい、ここで合ってますよ。"], "184": ["I'm right in front of the main entrance.", "正面入口の前にいます。"], "187": ["About five minutes.", "5分くらいです。"], "188": ["Yeah, there's usually a few waiting out front.", "はい、たいてい前に何台か待ってますよ。"], "189": ["What size are you looking for?", "何サイズをお探しですか？"], "190": ["Let me check. We might have one in the back.", "確認しますね。奥にあるかもしれません。"], "191": ["It's in the back, on your left.", "奥の左側です。"], "192": ["Sorry, we're sold out of black right now.", "すみません、黒は今売り切れなんです。"], "195": ["Yeah, we take cards.", "はい、使えます。"], "196": ["Yes, can I see your passport?", "はい、パスポートを見せていただけますか？"], "197": ["We close at nine.", "9時に閉まります。"], "198": ["Sure, just no flash, please.", "はい、フラッシュだけご遠慮ください。"], "199": ["Sure! Ready? One, two, three.", "いいですよ。いきますよ、1、2、3。"], "200": ["Sure, one more.", "はい、もう一枚。"], "201": ["You should check out the night market. It's great.", "ナイトマーケットがおすすめです。すごくいいですよ。"], "202": ["Yeah, it's about ten minutes on foot.", "はい、歩いて10分くらいです。"], "203": ["It's just around the corner, on the left.", "角を曲がってすぐ左です。"], "208": ["Of course. I'll let the kitchen know.", "かしこまりました。キッチンに伝えておきます。"], "209": ["Yeah, they're closed on Mondays.", "はい、月曜日は定休日なんです。"]};
+const DATA = [["日常生活・家での会話", "今日、何時に起きた？", "What time did you get up today?", "daily"], ["日常生活・家での会話", "昨日はあんまりよく眠れなかった。", "I didn't sleep very well last night.", "daily"], ["日常生活・家での会話", "もうちょっと寝ていたかった。", "I wanted to sleep a little longer.", "daily"], ["日常生活・家での会話", "今日、何か予定ある？", "Do you have any plans today?", "daily"], ["日常生活・家での会話", "今日は特に予定ないよ。", "I don't really have any plans today.", "daily"], ["日常生活・家での会話", "ちょっとコンビニ行ってくる。", "I'm gonna run to the convenience store.", "daily"], ["日常生活・家での会話", "何か買ってくるものある？", "Do you want me to get you anything?", "daily"], ["日常生活・家での会話", "コーヒー飲む？", "Do you want some coffee?", "daily"], ["日常生活・家での会話", "さっき飲んだから大丈夫。", "I'm good. I just had some.", "daily"], ["日常生活・家での会話", "これ、冷蔵庫に入れといた方がいい？", "Should I put this in the fridge?", "daily"], ["日常生活・家での会話", "お腹空いたけど、何食べるか決まらない。", "I'm hungry, but I don't know what to eat.", "daily"], ["日常生活・家での会話", "今日は家で食べよう。", "Let's just eat at home today.", "daily"], ["日常生活・家での会話", "これ思ったより美味しい。", "This is better than I expected.", "daily"], ["日常生活・家での会話", "ちょっと味濃くない？", "Isn't this a little too salty?", "daily"], ["日常生活・家での会話", "もうお腹いっぱい。", "I'm full already.", "daily"], ["日常生活・家での会話", "あとでお風呂入る。", "I'm gonna take a bath later.", "daily"], ["日常生活・家での会話", "エアコンちょっと寒くない？", "Isn't the AC a little too cold?", "daily"], ["日常生活・家での会話", "テレビの音、もう少し小さくしてくれる？", "Can you turn the TV down a little?", "daily"], ["日常生活・家での会話", "これどこに置いたっけ？", "Where did I put this?", "daily"], ["日常生活・家での会話", "さっきまでここにあったんだけど。", "It was right here a minute ago.", "daily"], ["仕事・映像編集", "今日は家で仕事する。", "I'm working from home today.", "daily"], ["仕事・映像編集", "明日はスタジオに行かないといけない。", "I gotta go to the studio tomorrow.", "daily"], ["仕事・映像編集", "今週はかなり忙しい。", "I'm pretty busy this week.", "daily"], ["仕事・映像編集", "来週は今のところ仕事入ってない。", "I don't have any work lined up for next week yet.", "daily"], ["仕事・映像編集", "この仕事、思ったより時間かかってる。", "This job's taking longer than I expected.", "daily"], ["仕事・映像編集", "あと1時間くらいで終わると思う。", "I think I'll be done in about an hour.", "daily"], ["仕事・映像編集", "まだ素材が届いてない。", "I haven't gotten the footage yet.", "daily"], ["仕事・映像編集", "クライアントから返事が来るのを待ってる。", "I'm waiting to hear back from the client.", "daily"], ["仕事・映像編集", "ちょっと修正が入った。", "I got a few revisions.", "daily"], ["仕事・映像編集", "これ直したら終わり。", "Once I fix this, I'm done.", "daily"], ["仕事・映像編集", "この素材、思ったより画質悪いな。", "This footage doesn't look as good as I expected.", "daily"], ["仕事・映像編集", "これ4Kで撮ってるのかな？", "I wonder if this was shot in 4K.", "daily"], ["仕事・映像編集", "なんか色がおかしく見える。", "The colors look a little off.", "daily"], ["仕事・映像編集", "ここの肌をもう少しきれいにしたい。", "I wanna clean up the skin a little more here.", "daily"], ["仕事・映像編集", "このカットだけやたら時間がかかる。", "This shot is taking forever.", "daily"], ["仕事・映像編集", "保存するのにめちゃくちゃ時間かかる。", "It takes forever to save.", "daily"], ["仕事・映像編集", "新しいMacにしたらかなり速くなると思う。", "I think it'd be a lot faster with a new Mac.", "daily"], ["仕事・映像編集", "今日はもう仕事したくない。", "I don't feel like working anymore today.", "daily"], ["仕事・映像編集", "とりあえず今日はここまでにしよう。", "I think I'm gonna call it a day.", "daily"], ["仕事・映像編集", "明日の朝続きをやる。", "I'll finish it tomorrow morning.", "daily"], ["野球", "今日、巨人何時から？", "What time do the Giants play today?", "daily"], ["野球", "今日の試合見れるかな。", "I wonder if I can watch the game today.", "daily"], ["野球", "今日は絶対勝ってほしい。", "I really want them to win today.", "daily"], ["野球", "このピッチャー、最近かなりいいよね。", "This pitcher's been really good lately.", "daily"], ["野球", "なんでこの選手をここで使うんだろう？", "Why are they using him here?", "daily"], ["野球", "なんで岡本をもっと上位で使わないんだろう？", "Why don't they bat Okamoto higher in the lineup?", "daily"], ["野球", "この打順はちょっと理解できない。", "I don't really get this lineup.", "daily"], ["野球", "ここで一本出れば大きいんだけどな。", "A hit here would be huge.", "daily"], ["野球", "この場面でホームラン打ったら最高だな。", "It'd be amazing if he hit a home run here.", "daily"], ["野球", "今の球、ストライクなの？", "That was a strike?", "daily"], ["野球", "あれは絶対セーフでしょ。", "He was definitely safe.", "daily"], ["野球", "もう一回リプレイ見せて。", "Show me that replay again.", "daily"], ["野球", "今日の球審ちょっと厳しくない？", "Isn't the umpire a little tough today?", "daily"], ["野球", "このピッチャー、球速いな。", "This guy throws hard.", "daily"], ["野球", "思ったより飛んだな。", "That went farther than I thought.", "daily"], ["野球", "この球場、一回行ってみたい。", "I wanna go to this ballpark someday.", "daily"], ["野球", "来年はもっとMLBの試合を見たい。", "I wanna watch more MLB games next year.", "daily"], ["野球", "最近ブルージェイズの試合ばっかり見てる。", "I've been watching a lot of Blue Jays games lately.", "daily"], ["野球", "朝起きて最初に試合結果を確認することが多い。", "I usually check the scores first thing in the morning.", "daily"], ["野球", "野球がない日はちょっと暇に感じる。", "Days without baseball feel kinda boring.", "daily"], ["英語・勉強", "最近、毎日少しずつ英語を勉強してる。", "I've been studying English a little every day lately.", "daily"], ["英語・勉強", "もう5年くらい英語を勉強してる。", "I've been studying English for about five years now.", "daily"], ["英語・勉強", "前よりは聞き取れるようになったと思う。", "I think my listening's gotten better.", "daily"], ["英語・勉強", "でもネイティブが速く話すとまだ難しい。", "But I still have trouble when native speakers talk fast.", "daily"], ["英語・勉強", "単語は聞こえるけど意味がすぐ出てこないことがある。", "Sometimes I hear the words, but I can't process them fast enough.", "daily"], ["英語・勉強", "この単語、前にも見たことある。", "I've seen this word before.", "daily"], ["英語・勉強", "これってどういう意味だっけ？", "What does this mean again?", "daily"], ["英語・勉強", "この表現、日常会話でよく使うのかな？", "Do people actually say this in everyday conversation?", "daily"], ["英語・勉強", "もっと自然な言い方ある？", "Is there a more natural way to say this?", "daily"], ["英語・勉強", "文法的には合ってるけど、ちょっと不自然な気がする。", "It's grammatically correct, but it sounds a little unnatural.", "daily"], ["英語・勉強", "なんでここは過去形なの？", "Why is this in the past tense?", "daily"], ["英語・勉強", "ここに「the」は必要？", "Do I need \"the\" here?", "daily"], ["英語・勉強", "これって受動態にできる？", "Can you say this in the passive voice?", "daily"], ["英語・勉強", "この二つの表現の違いがよく分からない。", "I don't really get the difference between these two.", "daily"], ["英語・勉強", "意味は分かるけど、自分ではなかなか使えない。", "I know what it means, but it's hard for me to use it myself.", "daily"], ["英語・勉強", "知ってる単語なのに聞き取れなかった。", "I knew the word, but I couldn't catch it.", "daily"], ["英語・勉強", "字幕があればだいたい分かる。", "I can understand most of it with subtitles.", "daily"], ["英語・勉強", "字幕なしでも分かるようになりたい。", "I wanna be able to understand it without subtitles.", "daily"], ["英語・勉強", "最近はシャドーイングよりリプロダクションをやってる。", "I've been doing more reproduction practice than shadowing lately.", "daily"], ["英語・勉強", "英語で考える癖をつけたい。", "I wanna get into the habit of thinking in English.", "daily"], ["外出・旅行・買い物", "明日何時に家出ればいいかな？", "What time should I leave tomorrow?", "daily"], ["外出・旅行・買い物", "ここから車でどれくらいかかる？", "How long does it take to get there by car?", "daily"], ["外出・旅行・買い物", "電車で行った方が早いかな？", "Would it be faster to take the train?", "daily"], ["外出・旅行・買い物", "今日は思ったより混んでるね。", "It's more crowded than I expected today.", "daily"], ["外出・旅行・買い物", "駐車場空いてるかな？", "I wonder if there's any parking.", "daily"], ["外出・旅行・買い物", "できれば通路側の席がいい。", "I'd prefer an aisle seat if possible.", "daily"], ["外出・旅行・買い物", "前の方じゃなくても大丈夫。", "It doesn't have to be near the front.", "daily"], ["外出・旅行・買い物", "ここって予約必要？", "Do we need a reservation here?", "daily"], ["外出・旅行・買い物", "クレジットカード使えますか？", "Do you take credit cards?", "daily"], ["外出・旅行・買い物", "タッチ決済できますか？", "Can I pay contactless?", "daily"], ["外出・旅行・買い物", "これ試着してもいいですか？", "Can I try this on?", "daily"], ["外出・旅行・買い物", "もう少し小さいサイズありますか？", "Do you have this in a smaller size?", "daily"], ["外出・旅行・買い物", "ちょっと考えてから決めます。", "Let me think about it.", "daily"], ["外出・旅行・買い物", "思ったより高いな。", "It's more expensive than I thought.", "daily"], ["外出・旅行・買い物", "ネットで買った方が安いかもしれない。", "It might be cheaper online.", "daily"], ["外出・旅行・買い物", "この辺に何か美味しい店あるかな？", "I wonder if there are any good places to eat around here.", "daily"], ["外出・旅行・買い物", "あんまり遠くまでは行きたくない。", "I don't wanna go too far.", "daily"], ["外出・旅行・買い物", "せっかくだから行ってみよう。", "We're here, so we might as well check it out.", "daily"], ["外出・旅行・買い物", "前から一度ここに来てみたかった。", "I've always wanted to come here.", "daily"], ["外出・旅行・買い物", "思ってたよりずっと良かった。", "It was way better than I expected.", "daily"], ["空港・チェックイン", "この便のチェックインはここでできますか？", "Can I check in for this flight here?", "travel"], ["空港・チェックイン", "通路側の席が空いていたら変更できますか？", "Can I switch to an aisle seat if one's available?", "travel"], ["空港・チェックイン", "できれば前の方の通路側がいいです。", "I'd prefer an aisle seat near the front if possible.", "travel"], ["空港・チェックイン", "この荷物は預けた方がいいですか？", "Should I check this bag?", "travel"], ["空港・チェックイン", "これは機内に持ち込めますか？", "Can I take this on the plane?", "travel"], ["空港・チェックイン", "荷物は最終目的地まで預けられますか？", "Can you check my bag all the way through to my final destination?", "travel"], ["空港・チェックイン", "乗り継ぎの時に荷物を受け取る必要ありますか？", "Do I need to pick up my bag during the layover?", "travel"], ["空港・チェックイン", "次の便の搭乗口はどこですか？", "Where's the gate for my next flight?", "travel"], ["空港・チェックイン", "乗り継ぎ時間、これで足りますか？", "Is this enough time to make my connection?", "travel"], ["空港・チェックイン", "ラウンジはどこにありますか？", "Where's the lounge?", "travel"], ["空港・チェックイン", "このカードでラウンジに入れますか？", "Can I get into the lounge with this card?", "travel"], ["空港・チェックイン", "搭乗は何時から始まりますか？", "What time does boarding start?", "travel"], ["空港・チェックイン", "この便、遅れてますか？", "Is this flight delayed?", "travel"], ["空港・チェックイン", "搭乗口が変わってないか確認したいです。", "I just wanna make sure the gate hasn't changed.", "travel"], ["空港・チェックイン", "保安検査はどれくらい時間かかりますか？", "How long does security usually take?", "travel"], ["機内", "この席で合ってますか？", "Is this my seat?", "travel"], ["機内", "荷物をここに入れてもいいですか？", "Can I put my bag up here?", "travel"], ["機内", "ちょっと通してもらえますか？", "Can I get by?", "travel"], ["機内", "座席を少し倒してもいいですか？", "Do you mind if I recline my seat a little?", "travel"], ["機内", "お水をもらえますか？", "Can I get some water?", "travel"], ["機内", "コーヒーをもう一杯もらえますか？", "Can I get another coffee?", "travel"], ["機内", "これは何の料理ですか？", "What's this?", "travel"], ["機内", "どっちがおすすめですか？", "Which one would you recommend?", "travel"], ["機内", "あとどれくらいで到着しますか？", "How much longer until we land?", "travel"], ["機内", "入国カードって書く必要ありますか？", "Do I need to fill out an arrival card?", "travel"], ["入国・空港到着", "観光で来ました。", "I'm here on vacation.", "travel"], ["入国・空港到着", "5日間滞在します。", "I'm staying for five days.", "travel"], ["入国・空港到着", "このホテルに泊まります。", "I'm staying at this hotel.", "travel"], ["入国・空港到着", "帰りの便は日曜日です。", "My flight back is on Sunday.", "travel"], ["入国・空港到着", "荷物がまだ出てきません。", "My bag still hasn't come out.", "travel"], ["入国・空港到着", "この便の荷物はここで合ってますか？", "Is this the right carousel for this flight?", "travel"], ["入国・空港到着", "僕のスーツケースが見つかりません。", "I can't find my suitcase.", "travel"], ["入国・空港到着", "SIMカードはどこで買えますか？", "Where can I get a SIM card?", "travel"], ["入国・空港到着", "Uberの乗り場はどこですか？", "Where's the Uber pickup area?", "travel"], ["入国・空港到着", "ここでGrabを呼んでも大丈夫ですか？", "Can I get a Grab from here?", "travel"], ["ホテル", "チェックインしたいんですが。", "Hi, I'd like to check in.", "travel"], ["ホテル", "予約は僕の名前で入ってます。", "The reservation's under my name.", "travel"], ["ホテル", "まだ部屋に入れないですよね？", "I guess the room isn't ready yet, right?", "travel"], ["ホテル", "部屋ができるまで荷物を預かってもらえますか？", "Can you hold my bags until the room's ready?", "travel"], ["ホテル", "部屋の準備ができたら教えてもらえますか？", "Can you let me know when the room's ready?", "travel"], ["ホテル", "朝食は何時からですか？", "What time does breakfast start?", "travel"], ["ホテル", "朝食は宿泊料金に含まれてますか？", "Is breakfast included?", "travel"], ["ホテル", "Wi-Fiのパスワードは何ですか？", "What's the Wi-Fi password?", "travel"], ["ホテル", "プールは何時まで使えますか？", "How late is the pool open?", "travel"], ["ホテル", "ジムは24時間使えますか？", "Is the gym open 24 hours?", "travel"], ["ホテル", "部屋のエアコンがあまり効いてないです。", "The AC in my room isn't working very well.", "travel"], ["ホテル", "シャワーのお湯が出ません。", "There's no hot water in the shower.", "travel"], ["ホテル", "タオルをもう2枚もらえますか？", "Can I get two more towels?", "travel"], ["ホテル", "今日は部屋の掃除は大丈夫です。", "We don't need housekeeping today.", "travel"], ["ホテル", "明日は何時ごろ掃除に来ますか？", "What time does housekeeping usually come tomorrow?", "travel"], ["ホテル", "レイトチェックアウトできますか？", "Can I get a late checkout?", "travel"], ["ホテル", "何時まで延長できますか？", "How late can I check out?", "travel"], ["ホテル", "追加料金はいくらですか？", "How much extra is it?", "travel"], ["ホテル", "チェックアウト後も荷物を預かってもらえますか？", "Can you hold my bags after I check out?", "travel"], ["ホテル", "チェックアウトした後もプールを使えますか？", "Can I still use the pool after I check out?", "travel"], ["レストラン・カフェ", "2人なんですが、今入れますか？", "Hi, do you have a table for two?", "travel"], ["レストラン・カフェ", "予約してないんですが大丈夫ですか？", "We don't have a reservation. Is that okay?", "travel"], ["レストラン・カフェ", "外の席って空いてますか？", "Do you have any tables outside?", "travel"], ["レストラン・カフェ", "できれば静かな席がいいです。", "Could we get a quieter table if possible?", "travel"], ["レストラン・カフェ", "メニューを見せてもらえますか？", "Can we see the menu?", "travel"], ["レストラン・カフェ", "これってどんな料理ですか？", "What's this dish like?", "travel"], ["レストラン・カフェ", "これは辛いですか？", "Is this spicy?", "travel"], ["レストラン・カフェ", "そんなに辛くしないでもらえますか？", "Can you make it not too spicy?", "travel"], ["レストラン・カフェ", "この店で一番人気なのはどれですか？", "What's the most popular dish here?", "travel"], ["レストラン・カフェ", "おすすめはどれですか？", "What would you recommend?", "travel"], ["レストラン・カフェ", "これとこれで迷ってます。", "I'm trying to decide between this and this.", "travel"], ["レストラン・カフェ", "これを一つください。", "I'll have this one.", "travel"], ["レストラン・カフェ", "これをシェアしても大丈夫ですか？", "Is it okay if we share this?", "travel"], ["レストラン・カフェ", "まだ注文した料理が一つ来てないです。", "We're still waiting on one of our dishes.", "travel"], ["レストラン・カフェ", "これは僕が頼んだものじゃないです。", "This isn't what I ordered.", "travel"], ["レストラン・カフェ", "お水をもう少しもらえますか？", "Can we get some more water?", "travel"], ["レストラン・カフェ", "めちゃくちゃ美味しいです。", "This is really good.", "travel"], ["レストラン・カフェ", "思ったより辛いです。", "It's spicier than I expected.", "travel"], ["レストラン・カフェ", "もうお腹いっぱいです。", "I'm stuffed.", "travel"], ["レストラン・カフェ", "残りを持ち帰れますか？", "Can we get the rest to go?", "travel"], ["レストラン・カフェ", "お会計お願いします。", "Can we get the check?", "travel"], ["レストラン・カフェ", "別々に払えますか？", "Can we split the check?", "travel"], ["レストラン・カフェ", "カードで払います。", "I'll pay by card.", "travel"], ["レストラン・カフェ", "チップはもう含まれてますか？", "Is the tip already included?", "travel"], ["タクシー・Uber・Grab", "ここまでお願いします。", "Can you take me here?", "travel"], ["タクシー・Uber・Grab", "ここまでどれくらいかかりますか？", "How long does it take to get there?", "travel"], ["タクシー・Uber・Grab", "渋滞してますか？", "Is traffic bad right now?", "travel"], ["タクシー・Uber・Grab", "ここで降ろしてもらって大丈夫です。", "You can drop me off here.", "travel"], ["タクシー・Uber・Grab", "この場所で合ってますか？", "Is this the right place?", "travel"], ["タクシー・Uber・Grab", "今どこにいますか？", "Where are you right now?", "travel"], ["タクシー・Uber・Grab", "入口の前にいます。", "I'm right in front of the entrance.", "travel"], ["タクシー・Uber・Grab", "黒い服を着てます。", "I'm wearing black.", "travel"], ["タクシー・Uber・Grab", "あと何分くらいで着きますか？", "About how many minutes away are you?", "travel"], ["タクシー・Uber・Grab", "帰りもここからタクシーを呼べますか？", "Can I get a taxi from here on the way back?", "travel"], ["買い物・観光・雑談", "これ、別のサイズありますか？", "Do you have this in another size?", "travel"], ["買い物・観光・雑談", "もう少し小さいのありますか？", "Do you have a smaller one?", "travel"], ["買い物・観光・雑談", "試着室はどこですか？", "Where's the fitting room?", "travel"], ["買い物・観光・雑談", "これの黒ってありますか？", "Do you have this in black?", "travel"], ["買い物・観光・雑談", "ちょっと考えます。", "I'm gonna think about it.", "travel"], ["買い物・観光・雑談", "また後で戻ってくるかもしれません。", "I might come back later.", "travel"], ["買い物・観光・雑談", "カード使えますか？", "Do you take cards?", "travel"], ["買い物・観光・雑談", "免税できますか？", "Can I get this tax-free?", "travel"], ["買い物・観光・雑談", "ここ、何時に閉まりますか？", "What time do you close?", "travel"], ["買い物・観光・雑談", "写真撮っても大丈夫ですか？", "Is it okay if I take a picture?", "travel"], ["買い物・観光・雑談", "僕たちの写真を撮ってもらえますか？", "Could you take a picture of us?", "travel"], ["買い物・観光・雑談", "もう一枚撮ってもらえますか？", "Could you take one more?", "travel"], ["買い物・観光・雑談", "この辺でおすすめの場所ありますか？", "Is there anywhere around here you'd recommend?", "travel"], ["買い物・観光・雑談", "歩いて行ける距離ですか？", "Is it within walking distance?", "travel"], ["買い物・観光・雑談", "ここから一番近い入口はどこですか？", "Where's the closest entrance from here?", "travel"], ["買い物・観光・雑談", "前からここに来てみたかったんです。", "I've wanted to come here for a long time.", "travel"], ["買い物・観光・雑談", "今回が初めてです。", "It's my first time here.", "travel"], ["買い物・観光・雑談", "前にも一度来たことがあります。", "I've been here once before.", "travel"], ["買い物・観光・雑談", "日本から来ました。", "I'm from Japan.", "travel"], ["レストラン・カフェ", "料理を一品ずつ順番に持ってきてもらえますか？", "Could you bring the dishes out one at a time?", "travel"], ["買い物・観光・雑談", "ここ今日休みですか？", "Is this place closed today?", "travel"], ["英会話", "最近かなり忙しかった。", "I've been pretty busy lately.", "daily"], ["英会話", "今は特に好きな選手はいない。", "I don't really have a favorite player right now.", "daily"], ["英会話", "一番好きな選手は岡本和真だった。", "My favorite player used to be Kazuma Okamoto.", "daily"], ["英会話", "ほとんど野球の話をしてる。", "We mostly talk about baseball.", "daily"], ["英会話", "ビールを飲んだり食べたりしながら試合を見る。", "I usually watch the game with some beer and food.", "daily"], ["英会話", "試合を見ながら友達とオンラインでチャットしてる。", "I chat with my friends online while I watch the game.", "daily"], ["英会話", "もう少しで負けるところだった。", "They almost lost the game.", "daily"], ["英会話", "優勝を逃した。", "They missed out on the championship.", "daily"], ["英会話", "得点圏にランナーがいても打てない。", "They can't hit with runners in scoring position.", "daily"], ["英会話", "見てて本当にイライラする。", "It's really frustrating to watch.", "daily"], ["英会話", "彼女の力強い歌声が好き。", "I love her powerful voice.", "daily"], ["英会話", "彼女は本当に歌が上手い。", "She's a really good singer.", "daily"], ["英会話", "一曲だけ選べない。", "I can't pick just one song.", "daily"], ["英会話", "彼女たちの曲はほとんど全部好き。", "I like pretty much all of their songs.", "daily"], ["英会話", "YouTubeでライブ映像をよく見る。", "I often watch their live performances on YouTube.", "daily"], ["英会話", "彼女たちは8人組だ。", "They're an eight-member group.", "daily"], ["英会話", "カメラがずっと固定されている。", "The camera stays in one place.", "daily"], ["英会話", "だから全員のダンスがよく見える。", "So I can clearly see everyone dancing.", "daily"]]
+;
+const SETS = [['all','すべて'],['daily','日常会話'],['travel','旅行英会話']];
+const inSet = i => state.set==='all' || DATA[i][3]===state.set;
+const catsOf = s => [...new Set(DATA.filter(d=>s==='all'||d[3]===s).map(d=>d[0]))];
+
+const store = {
+  get(k,def){try{const v=localStorage.getItem('shunkan:'+k);return v===null?def:JSON.parse(v)}catch(e){return def}},
+  set(k,v){try{localStorage.setItem('shunkan:'+k,JSON.stringify(v))}catch(e){}}
+};
+
+
+// 重複削除に伴う記録の番号ずれを補正(1回だけ)
+(function(){
+  if(store.get('migDup',false)) return;
+  const removed=[191, 197]; const m=store.get('marks',{}); const out={};
+  Object.keys(m).forEach(k=>{ const i=+k; if(removed.includes(i)) return; out[i-removed.filter(r=>r<i).length]=m[k]; });
+  store.set('marks',out); store.set('migDup',true);
+})();
+const state = {
+  set: store.get('set','all'),
+  cat: store.get('cat','all'),
+  showReply: store.get('showReply',true),
+  showGram: store.get('showGram',true),
+  shuffle: store.get('shuffle',false),
+  weakOnly: false,
+  audioJa: store.get('audioJa',true),
+  audioEn: store.get('audioEn',true),
+  rate: store.get('rate',1),
+  rateJa: store.get('rateJa',1.3),
+  auto: store.get('auto',false),
+  marks: store.get('marks',{}), // index -> 'ok' | 'again'
+  order: [], pos: 0, revealed: false
+};
+
+const $ = id=>document.getElementById(id);
+
+/* ---------- Voices ---------- */
+const synth = window.speechSynthesis;
+let voices = [];
+const QUALITY = [/natural/i,/neural/i,/online/i,/premium/i,/enhanced/i,/siri/i,/google/i,/samantha|ava|allison|zoe|evan|nathan|aria|jenny|guy|kyoko|otoya|nanami|keita|o-ren/i];
+function score(v){
+  let s=0; QUALITY.forEach((re,i)=>{ if(re.test(v.name)) s+= (QUALITY.length-i)*2; });
+  if(!v.localService) s+=1;
+  if(/novelty|compact|eloquence|bad news|bells|boing|bubbles|cellos|whisper|zarvox|trinoids|organ|jester|superstar|wobble|albert|fred|junior|ralph|grandma|grandpa|rocko|shelley|flo|reed|sandy/i.test(v.name)) s-=50;
+  return s;
+}
+function pick(lang){
+  const list = voices.filter(v=>v.lang && v.lang.replace('_','-').toLowerCase().startsWith(lang));
+  if(lang==='en'){
+    list.sort((a,b)=>{
+      const pa=/en-us/i.test(a.lang.replace('_','-'))?3:0, pb=/en-us/i.test(b.lang.replace('_','-'))?3:0;
+      return (score(b)+pb)-(score(a)+pa);
+    });
+  } else list.sort((a,b)=>score(b)-score(a));
+  return list;
+}
+function fillSelect(sel, list, savedKey){
+  const saved = store.get(savedKey,null);
+  sel.innerHTML='';
+  if(!list.length){ const o=document.createElement('option'); o.textContent='この端末に対応する声がありません'; o.value=''; sel.appendChild(o); sel.disabled=true; return; }
+  sel.disabled=false;
+  list.forEach(v=>{ const o=document.createElement('option'); o.value=v.voiceURI; o.textContent=`${v.name} (${v.lang})`; sel.appendChild(o); });
+  if(saved && list.some(v=>v.voiceURI===saved)) sel.value=saved; else sel.value=list[0].voiceURI;
+}
+function loadVoices(){
+  if(!synth) return;
+  voices = synth.getVoices();
+  if(!voices.length) return;
+  fillSelect($('vJa'), pick('ja'), 'voiceJa');
+  const enList=pick('en'); fillSelect($('vEn'), enList, 'voiceEn');
+  fillSelect($('vReply'), enList, 'voiceReply');
+  if(!store.get('voiceReply',null) && enList.length>1){ const alt=enList.find(v=>v.voiceURI!==$('vEn').value); if(alt) $('vReply').value=alt.voiceURI; }
+}
+if(synth){ loadVoices(); synth.onvoiceschanged = loadVoices; setTimeout(loadVoices,500); }
+
+function speak(text, lang, onend){
+  if(!synth){ onend&&onend(); return; }
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  const uri = lang==='ja'?$('vJa').value:lang==='reply'?$('vReply').value:$('vEn').value;
+  const v = voices.find(x=>x.voiceURI===uri);
+  if(v){u.voice=v;u.lang=v.lang}else{u.lang = lang==='ja'?'ja-JP':'en-US'}
+  u.rate = lang==='ja'?state.rateJa:state.rate;
+  if(onend){ u.onend=onend; }
+  synth.speak(u);
+}
+
+/* ---------- Deck ---------- */
+function buildOrder(){
+  let idx = DATA.map((_,i)=>i).filter(i=> inSet(i) && (state.cat==='all' || DATA[i][0]===state.cat));
+  if(state.weakOnly) idx = idx.filter(i=>state.marks[i]==='again');
+  const rank={}; DATA.forEach((d,i)=>{ const k=d[3]+'|'+d[0]; if(!(k in rank)) rank[k]=i; });
+  idx.sort((a,b)=> (rank[DATA[a][3]+'|'+DATA[a][0]]-rank[DATA[b][3]+'|'+DATA[b][0]]) || a-b);
+  if(state.shuffle){ for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];} }
+  state.order=idx; state.pos=0;
+}
+function current(){ return state.order[state.pos]; }
+
+let autoTimer=null;
+function stopAuto(){ clearTimeout(autoTimer); autoTimer=null; $('cd').classList.remove('run'); }
+function startCountdown(){
+  stopAuto(); if(!state.auto || !state.order.length) return;
+  const c=$('cd'); void c.offsetWidth; c.classList.add('run');
+  autoTimer=setTimeout(()=>{ c.classList.remove('run'); if(state.auto && !state.revealed) reveal(); },5000);
+}
+function scheduleNext(){
+  stopAuto(); if(!state.auto) return;
+  autoTimer=setTimeout(()=>{ if(state.auto && state.revealed) next(); },2000);
+}
+function render(speakJa){
+  stopAuto();
+  const n=state.order.length;
+  $('count').textContent = n? `${state.pos+1} / ${n}` : '0 / 0';
+  $('prog').style.width = n? ((state.pos+1)/n*100)+'%' : '0';
+  const card=$('card');
+  if(!n){
+    $('cat').textContent=''; $('jaText').textContent= state.weakOnly?'「言えなかった」文はまだありません。':'該当する文がありません。';
+    $('enText').hidden=true; $('enHidden').hidden=true; $('reply').hidden=true; $('gram').hidden=true;
+    $('actions').style.display='none'; $('grade').classList.remove('on');
+    $('rpJa').disabled=true; $('rpEn').disabled=true;
+    updateStat(); return;
+  }
+  $('actions').style.display='';
+  $('rpJa').disabled=false;
+  const [cat,ja,en]=DATA[current()];
+  const m=state.marks[current()];
+  $('cat').textContent = cat + (m==='ok'?'　前回：言えた':m==='again'?'　前回：言えなかった':'');
+  $('jaText').textContent=ja;
+  $('enText').textContent=en;
+  state.revealed=false;
+  $('enText').hidden=true; $('enHidden').hidden=false; $('reply').hidden=true; $('gram').hidden=true; $('gram').innerHTML=gramHTML(current());
+  const rep=REPLIES[current()]; $('replyEn').textContent=rep?rep[0]:''; $('replyJa').textContent=rep?rep[1]:'';
+  $('enBox').classList.remove('reveal');
+  $('reveal').textContent='英語を表示';
+  $('rpEn').disabled=true;
+  $('grade').classList.remove('on');
+  $('prev').disabled = state.pos===0;
+  updateStat();
+  if(speakJa && state.audioJa) speak(ja,'ja');
+  if(state.auto) startCountdown();
+}
+function reveal(){
+  if(!state.order.length) return;
+  if(state.revealed){ next(); return; }
+  state.revealed=true;
+  $('enHidden').hidden=true; $('enText').hidden=false;
+  const rep = state.showReply ? REPLIES[current()] : null;
+  $('reply').hidden = !rep;
+  $('gram').hidden = !(state.showGram && GRAMMAR[current()]);
+  $('enBox').classList.add('reveal');
+  $('reveal').textContent='次へ';
+  $('rpEn').disabled=false;
+  $('grade').classList.add('on');
+  const en=DATA[current()][2];
+  stopAuto();
+  if(state.audioEn && synth){
+    const idx=current(); let done=false;
+    const after=()=>{ if(done||idx!==current()||!state.revealed) return; done=true; scheduleNext(); };
+    if(rep){
+      let enDone=false;
+      const toReply=()=>{ if(enDone||idx!==current()||!state.revealed) return; enDone=true; setTimeout(()=>{ if(idx===current()&&state.revealed) speak(rep[0],'reply',after); },500); };
+      speak(en,'en',toReply);
+    } else speak(en,'en',after);
+    setTimeout(after, rep?16000:9000); // 読み上げ終了を検知できない場合の保険
+  } else scheduleNext();
+}
+function next(){
+  if(state.pos < state.order.length-1){ state.pos++; render(true); }
+  else { state.pos=0; if(state.shuffle) buildOrder(); render(true); }
+}
+function prev(){ if(state.pos>0){ state.pos--; render(true); } }
+function mark(kind){
+  const i=current(); if(i===undefined) return;
+  state.marks[i]=kind; store.set('marks',state.marks);
+  next();
+}
+function updateStat(){
+  const ids = DATA.map((_,i)=>i).filter(i=> inSet(i) && (state.cat==='all' || DATA[i][0]===state.cat));
+  const ok = ids.filter(i=>state.marks[i]==='ok').length;
+  const ag = ids.filter(i=>state.marks[i]==='again').length;
+  $('stat').textContent = `言えた ${ok}　言えなかった ${ag}`;
+}
+
+/* ---------- UI ---------- */
+function makeSets(){
+  const s=$('sets'); s.innerHTML='';
+  SETS.forEach(([v,label])=>{
+    const n=DATA.filter(d=>v==='all'||d[3]===v).length;
+    const b=document.createElement('button'); b.className='set'; b.innerHTML=label+'<small>'+n+'</small>';
+    b.setAttribute('aria-pressed', String(state.set===v));
+    b.onclick=()=>{ state.set=v; store.set('set',v); state.cat='all'; store.set('cat','all'); makeSets(); makeFilters(); buildOrder(); render(true); };
+    s.appendChild(b);
+  });
+}
+function makeFilters(){
+  const f=$('filters'); f.innerHTML='';
+  const cats=catsOf(state.set);
+  if(state.cat!=='all' && !cats.includes(state.cat)) state.cat='all';
+  const all=[['all','すべて']].concat(cats.map(c=>[c,c]));
+  all.forEach(([v,label])=>{
+    const b=document.createElement('button'); b.className='chip'; b.textContent=label;
+    b.setAttribute('aria-pressed', String(state.cat===v));
+    b.onclick=()=>{ state.cat=v; store.set('cat',v); [...f.children].forEach(c=>c.setAttribute('aria-pressed','false')); b.setAttribute('aria-pressed','true'); buildOrder(); render(true); };
+    f.appendChild(b);
+  });
+}
+function setToggle(el,val){ el.setAttribute('aria-pressed',String(val)); }
+
+$('tgJa').onclick=()=>{ state.audioJa=!state.audioJa; store.set('audioJa',state.audioJa); setToggle($('tgJa'),state.audioJa); if(!state.audioJa&&synth) synth.cancel(); };
+$('tgEn').onclick=()=>{ state.audioEn=!state.audioEn; store.set('audioEn',state.audioEn); setToggle($('tgEn'),state.audioEn); if(!state.audioEn&&synth) synth.cancel(); };
+$('reveal').onclick=reveal;
+$('next').onclick=next;
+$('prev').onclick=prev;
+$('ok').onclick=()=>mark('ok');
+$('again').onclick=()=>mark('again');
+$('rpJa').onclick=()=>{ const i=current(); if(i!==undefined) speak(DATA[i][1],'ja'); };
+$('rpEn').onclick=()=>{ const i=current(); if(i!==undefined && state.revealed) speak(DATA[i][2],'en'); };
+$('shuffle').onclick=()=>{ state.shuffle=!state.shuffle; store.set('shuffle',state.shuffle); setToggle($('shuffle'),state.shuffle); buildOrder(); render(true); };
+$('weak').onclick=()=>{ state.weakOnly=!state.weakOnly; setToggle($('weak'),state.weakOnly); buildOrder(); render(true); };
+$('reset').onclick=()=>{ if(confirm('「言えた／言えなかった」の記録をすべて消しますか？')){ state.marks={}; store.set('marks',{}); buildOrder(); render(false); } };
+$('vJa').onchange=e=>{ store.set('voiceJa',e.target.value); const i=current(); if(i!==undefined) speak(DATA[i][1],'ja'); };
+$('vReply').onchange=e=>{ store.set('voiceReply',e.target.value); const r=REPLIES[current()]; if(r) speak(r[0],'reply'); };
+$('rpReply').onclick=()=>{ const r=REPLIES[current()]; if(r&&state.revealed) speak(r[0],'reply'); };
+$('tgGram').onclick=()=>{ state.showGram=!state.showGram; store.set('showGram',state.showGram); setToggle($('tgGram'),state.showGram); if(state.revealed) $('gram').hidden = !(state.showGram && GRAMMAR[current()]); };
+$('tgReply').onclick=()=>{ state.showReply=!state.showReply; store.set('showReply',state.showReply); setToggle($('tgReply'),state.showReply); if(state.revealed) $('reply').hidden = !(state.showReply && REPLIES[current()]); };
+$('vEn').onchange=e=>{ store.set('voiceEn',e.target.value); const i=current(); if(i!==undefined) speak(DATA[i][2],'en'); };
+$('rateJa').value=state.rateJa;
+$('rateJa').oninput=e=>{ state.rateJa=parseFloat(e.target.value); store.set('rateJa',state.rateJa); };
+$('rateJa').onchange=()=>{ const i=current(); if(i!==undefined) speak(DATA[i][1],'ja'); };
+$('rate').value=state.rate;
+$('rate').oninput=e=>{ state.rate=parseFloat(e.target.value); store.set('rate',state.rate); };
+$('rate').onchange=()=>{ const i=current(); if(i!==undefined) speak(DATA[i][2],'en'); };
+$('tgAuto').onclick=()=>{ state.auto=!state.auto; store.set('auto',state.auto); setToggle($('tgAuto'),state.auto); if(state.auto){ if(!state.revealed) startCountdown(); else scheduleNext(); } else stopAuto(); };
+
+document.addEventListener('keydown',e=>{
+  if(e.target.closest('select,input,summary')) return;
+  if(e.key===' '||e.key==='Enter'){ if(e.target.tagName==='BUTTON') return; e.preventDefault(); reveal(); }
+  else if(e.key==='ArrowRight'){ next(); }
+  else if(e.key==='ArrowLeft'){ prev(); }
+  else if(e.key==='j'||e.key==='J'){ $('rpJa').click(); }
+  else if(e.key==='e'||e.key==='E'){ $('rpEn').click(); }
+});
+
+setToggle($('tgJa'),state.audioJa); setToggle($('tgEn'),state.audioEn); setToggle($('shuffle'),state.shuffle); setToggle($('tgAuto'),state.auto); setToggle($('tgReply'),state.showReply); setToggle($('tgGram'),state.showGram);
+if(!synth){ $('tgJa').disabled=true; $('tgEn').disabled=true; }
+makeSets(); makeFilters(); buildOrder(); render(false);
+</script>
+</body>
+</html>
