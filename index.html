@@ -107,6 +107,7 @@ h1{margin:0;font-size:1.05rem;font-weight:700;letter-spacing:.02em}
 .btn{border-radius:12px;padding:10px 18px;font-weight:700;font-size:1rem;border:1px solid var(--line);background:var(--surface)}
 .btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .btn.nav{padding:10px 16px;font-weight:500}
+.mid{display:grid;min-width:0}
 .grade{display:none;grid-template-columns:1fr 1fr;gap:10px}
 .grade.on{display:grid}
 .btn.ok{background:var(--ok-soft);border-color:transparent;color:var(--ok)}
@@ -129,6 +130,7 @@ details.settings summary{cursor:pointer;color:var(--muted)}
 @media (max-width:480px){
   .ja{padding:16px 20px 14px}.en{padding:12px 20px 14px}
   .actions{grid-template-columns:auto 1fr auto;gap:8px}
+  .grade{gap:8px}.btn.ok,.btn.again{padding-left:6px;padding-right:6px}
   .btn.nav{padding:10px 12px}
 }
 @media (prefers-reduced-motion:reduce){.en.reveal .en-text{animation:none}.track i{transition:none}}
@@ -167,12 +169,14 @@ details.settings summary{cursor:pointer;color:var(--muted)}
 
   <div class="actions" id="actions">
     <button class="btn nav" id="prev" aria-label="前の文">前へ</button>
-    <button class="btn primary" id="reveal">英語を表示</button>
+    <div class="mid">
+      <button class="btn primary" id="reveal">英語を表示</button>
+      <div class="grade" id="grade">
+        <button class="btn ok" id="ok">言えた</button>
+        <button class="btn again" id="again">言えなかった</button>
+      </div>
+    </div>
     <button class="btn nav" id="next" aria-label="次の文">次へ</button>
-  </div>
-  <div class="grade" id="grade">
-    <button class="btn again" id="again">言えなかった</button>
-    <button class="btn ok" id="ok">言えた</button>
   </div>
 
   <div class="sub">
@@ -344,7 +348,7 @@ function render(speakJa){
   $('enText').hidden=true; $('enHidden').hidden=false; $('reply').hidden=true; $('gram').hidden=true; $('gram').innerHTML=gramHTML(current());
   const rep=REPLIES[current()]; $('replyEn').textContent=rep?rep[0]:''; $('replyJa').textContent=rep?rep[1]:'';
   $('enBox').classList.remove('reveal');
-  $('reveal').textContent='英語を表示';
+  $('reveal').hidden=false;
   $('rpEn').disabled=true;
   $('grade').classList.remove('on');
   $('prev').disabled = state.pos===0;
@@ -361,7 +365,7 @@ function reveal(){
   $('reply').hidden = !rep;
   $('gram').hidden = !(state.showGram && GRAMMAR[current()]);
   $('enBox').classList.add('reveal');
-  $('reveal').textContent='次へ';
+  $('reveal').hidden=true;
   $('rpEn').disabled=false;
   $('grade').classList.add('on');
   const en=DATA[current()][2];
